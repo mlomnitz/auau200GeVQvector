@@ -22,7 +22,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
-
+  
 ClassImp(StEventPlane)
 
 //-----------------------------------------------------------------------------
@@ -282,23 +282,6 @@ int StEventPlane::calculateEventPlane()
   mEventPlane2 = mQ2.Phi()*0.5;
   mEventPlaneEtaPlus = mQEtaPlus.Phi()*0.5;
   mEventPlaneEtaMinus = mQEtaMinus.Phi()*0.5;
-//  hQyQxCent->Fill(mCent, Qx, Qy);
-//  hEventPlaneCent->Fill(mCent, mEventPlane);
-
-//  hQyQx1Cent->Fill(mCent, Qx1, Qy1);
-//  hEventPlane1Cent->Fill(mCent, mEventPlane1);
-//
-//  hQyQx2Cent->Fill(mCent, Qx2, Qy2);
-//  hEventPlane2Cent->Fill(mCent, mEventPlane2);
-//
-//  hQyQxEtaPlusCent->Fill(mCent, QxEtaPlus, QyEtaPlus);
-//  hEventPlaneEtaPlusCent->Fill(mCent, mEventPlaneEtaPlus);
-//
-//  hQyQxEtaMinusCent->Fill(mCent, QxEtaMinus, QyEtaMinus);
-//  hEventPlaneEtaMinusCent->Fill(mCent, mEventPlaneEtaMinus);
-//
-//  prfCosResolutionRandomCent->Fill(mCent, cos(2.*(mEventPlane1-mEventPlane2)));
-//  prfCosResolutionEtaCent->Fill(mCent, cos(2.*(mEventPlaneEtaPlus-mEventPlaneEtaMinus)));
   mResolutionRandom = cos(2.*(mEventPlane1-mEventPlane2));
   mResolutionEta = cos(2.*(mEventPlaneEtaPlus-mEventPlaneEtaMinus));
 
