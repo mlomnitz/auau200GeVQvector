@@ -42,7 +42,7 @@ Int_t StEventPlane::Init()
   
   mAcceptEvent = false;
   mRunnumber = 0;
-  mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter/qVectorRun";
+  mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
 
   //Event Cuts 
   mVzMax = 6.0;
@@ -56,8 +56,6 @@ Int_t StEventPlane::Init()
   mPtMinEventPlane = 0.15;
   mPtMaxEventPlane = 2.;
   mDcaMaxEventPlane = 3.0;
-  
-
   
  // // event plane and Q vector
   float PI = TMath::Pi();
@@ -199,12 +197,10 @@ int StEventPlane::calculateEventPlane()
       break;
     }
 
-//    hNHitsFit->Fill(picoTrack->nHitsFit());
     if(picoTrack->nHitsFit() < mNHitsFitMin) continue;
 
     StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
     float dca = helix->geometricSignedDistance(mVertexPos);
-//    hDca->Fill(dca);
     if(TMath::Abs(dca) > mDcaMaxEventPlane) continue;
 
     float pathLengthToPrimaryVertex =helix->pathLength(mVertexPos.x(), mVertexPos.y());
@@ -212,11 +208,8 @@ int StEventPlane::calculateEventPlane()
     float pt = momentum.perp();
     float eta = momentum.pseudoRapidity();
     float phi = momentum.phi();
-//    hEta->Fill(eta);
-//    hPt->Fill(pt);
     if(fabs(eta) > mEtaMaxEventPlane) continue;
     if(pt<mPtMinEventPlane || pt>mPtMaxEventPlane) continue;
-
 
     float qx = cos(2*phi)*pt;
     float qy = sin(2*phi)*pt;
