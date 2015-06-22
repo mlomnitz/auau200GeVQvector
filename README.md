@@ -16,9 +16,9 @@ StEventPlane*  eventPlaneMaker = new StEventPlane("eventPlaneMaker",picoDstMaker
 ###How to get information form this maker:
 ```bash
  #include "StRoot/StEventPlane/StEventPlane.h"
- StEventPlane*  eventPlaneMaker
- meventPlane(eventPlaneMaker)
- cout<<meventPlane->getCentrality()<<endl;  
- cout<<meventPlane->getEventPlane()<<endl;
- cout<<meventPlane->getResolutionRandom()<<endl;
+ StEventPlane*  eventPlaneMaker;
+ #meventPlane(eventPlaneMaker);
+ #cout<<meventPlane->getCentrality()<<endl;  
+ #cout<<meventPlane->getEventPlane()<<endl;
+ #cout<<meventPlane->getResolutionRandom()<<endl;
  ```
