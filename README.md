@@ -6,7 +6,6 @@
 	Mustafa Mustafa (mmustafa@lbl.gov)  
 
 - - -
-###How to use this code:  
 
 ###How to run this code:  
 ```bash
