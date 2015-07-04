@@ -42,6 +42,7 @@ class StEventPlane : public StMaker {
   Float_t getResolutionRandom() const { return (Float_t) mResolutionRandom; }
   Float_t getResolutionEta() const { return (Float_t) mResolutionEta; }
 
+  Bool_t getAcceptEvent() const { return (Bool_t) mAcceptEvent; }
 
  private:
   StPicoDstMaker *mPicoDstMaker;
