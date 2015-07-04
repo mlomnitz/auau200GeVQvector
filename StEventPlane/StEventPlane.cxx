@@ -129,9 +129,6 @@ void StEventPlane::getEventInfo()
   mgrefmultCorrUtil->initEvent(mPicoDst->event()->grefMult(),mVertexPos.z(),mPicoDst->event()->ZDCx()) ;
   mCent  = mgrefmultCorrUtil->getCentralityBin9();
 
-  
-  mAcceptEvent = true;
-
   if(mRunnumber != mPicoEvent->runId())
   {
     mRunnumber = mPicoEvent->runId();
@@ -139,11 +136,15 @@ void StEventPlane::getEventInfo()
     sprintf(fileName, "%s/%i.qVector.root", mQVectorDir.Data(), mRunnumber);
     cout<<"load qVector file: "<<fileName<<endl;
     TFile* fQVector = new TFile(fileName);
+    fQVector->GetObject("prfQxCentEtaPlus",prfQxCentEtaPlus);
+    if (!prfQxCentEtaPlus) { cout << "THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endl; return;}
     prfQxCentEtaPlus = (TProfile*)fQVector->Get("prfQxCentEtaPlus");
     prfQyCentEtaPlus = (TProfile*)fQVector->Get("prfQyCentEtaPlus");
     prfQxCentEtaMinus = (TProfile*)fQVector->Get("prfQxCentEtaMinus");
     prfQyCentEtaMinus = (TProfile*)fQVector->Get("prfQyCentEtaMinus");
   }
+
+  mAcceptEvent = true;
 
   mBField = mPicoEvent->bField();
 }
