@@ -42,7 +42,8 @@ class StEventPlane : public StMaker {
   Float_t getResolutionRandom() const { return (Float_t) mResolutionRandom; }
   Float_t getResolutionEta() const { return (Float_t) mResolutionEta; }
 
-  Bool_t getAcceptEvent() const { return (Bool_t) mAcceptEvent; }
+  Int_t   getRunId() const { return (Int_t) mRunnumber; }
+  Bool_t getAcceptEvent() const { return (Bool_t)  mAcceptQvectorFile && mAcceptQvectorFiletmp; }
 
  private:
   StPicoDstMaker *mPicoDstMaker;
@@ -52,6 +53,8 @@ class StEventPlane : public StMaker {
   StRefMultCorr* mgrefmultCorrUtil;
   
   bool	mAcceptEvent;
+  bool	mAcceptQvectorFile;
+  bool	mAcceptQvectorFiletmp;
   Int_t         mCent;
   Int_t         mRunnumber;
   Float_t       mBField;

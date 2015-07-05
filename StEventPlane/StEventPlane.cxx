@@ -41,6 +41,8 @@ Int_t StEventPlane::Init()
 {
   
   mAcceptEvent = false;
+  mAcceptQvectorFile = false;
+  mAcceptQvectorFiletmp = true;
   mRunnumber = 0;
   mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
 
@@ -56,6 +58,8 @@ Int_t StEventPlane::Init()
   mPtMinEventPlane = 0.15;
   mPtMaxEventPlane = 2.;
   mDcaMaxEventPlane = 3.0;
+  
+
   
  // // event plane and Q vector
   float PI = TMath::Pi();
@@ -129,6 +133,9 @@ void StEventPlane::getEventInfo()
   mgrefmultCorrUtil->initEvent(mPicoDst->event()->grefMult(),mVertexPos.z(),mPicoDst->event()->ZDCx()) ;
   mCent  = mgrefmultCorrUtil->getCentralityBin9();
 
+  
+  mAcceptEvent = true;
+
   if(mRunnumber != mPicoEvent->runId())
   {
     mRunnumber = mPicoEvent->runId();
@@ -137,14 +144,14 @@ void StEventPlane::getEventInfo()
     cout<<"load qVector file: "<<fileName<<endl;
     TFile* fQVector = new TFile(fileName);
     fQVector->GetObject("prfQxCentEtaPlus",prfQxCentEtaPlus);
-    if (!prfQxCentEtaPlus) { cout << "THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endl; return;}
+    if (!prfQxCentEtaPlus) { cout << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endl; mAcceptQvectorFile = false; mAcceptQvectorFiletmp = false; return;}
+    else { mAcceptQvectorFile = true; mAcceptQvectorFiletmp = true;}
     prfQxCentEtaPlus = (TProfile*)fQVector->Get("prfQxCentEtaPlus");
     prfQyCentEtaPlus = (TProfile*)fQVector->Get("prfQyCentEtaPlus");
     prfQxCentEtaMinus = (TProfile*)fQVector->Get("prfQxCentEtaMinus");
     prfQyCentEtaMinus = (TProfile*)fQVector->Get("prfQyCentEtaMinus");
   }
-
-  mAcceptEvent = true;
+    else {mAcceptQvectorFile = true;}
 
   mBField = mPicoEvent->bField();
 }
@@ -211,6 +218,7 @@ int StEventPlane::calculateEventPlane()
     float phi = momentum.phi();
     if(fabs(eta) > mEtaMaxEventPlane) continue;
     if(pt<mPtMinEventPlane || pt>mPtMaxEventPlane) continue;
+
 
     float qx = cos(2*phi)*pt;
     float qy = sin(2*phi)*pt;
