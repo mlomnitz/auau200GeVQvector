@@ -103,7 +103,8 @@ Int_t StEventPlane::Make()
 
    getEventInfo();//get event info
 
-   if (mAcceptEvent)
+ //  if (mAcceptEvent)
+   if (mAcceptQvectorFile && mAcceptQvectorFiletmp)
    {
       int eventPlaneStatus = calculateEventPlane();
       if (!eventPlaneStatus)
