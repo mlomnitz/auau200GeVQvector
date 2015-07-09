@@ -1,5 +1,10 @@
 # auau200GeVQvector
-  
+LBNL - STAR Experiment, Relativistic Heavy Ion Collider (RHIC), BNL  
+RHIC year 2014 Run, with Heavy Flavor Tracker
+
+# Declaration
+this code was inherit form HaoQiu's Analysis code
+
 ###Code Authors:  
 	Guannan Xie (guannanxie@lbl.gov)  
 	Hao Qiu (hqiu@lbl.gov)  
