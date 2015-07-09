@@ -4,8 +4,6 @@
 #include "StPicoDstMaker/StPicoTrack.h"
 #include "StPicoDstMaker/StPicoDstMaker.h"
 #include "StPicoDstMaker/StPicoBTofPidTraits.h"
-#include "StPicoD0EventMaker/StPicoD0Event.h"
-#include "StPicoD0EventMaker/StKaonPion.h"
 #include "PhysicalConstants.h"
 #include "StRoot/StRefMultCorr/StRefMultCorr.h"
 #include "StRoot/StRefMultCorr/CentralityMaker.h"

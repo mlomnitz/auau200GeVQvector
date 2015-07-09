@@ -8,7 +8,6 @@
 
 class StPicoDst;
 class StPicoEvent;
-class StPicoD0Event;
 class StPicoDstMaker;
 class StRefMultCorr;
 class TH1I;
@@ -49,7 +48,6 @@ class StEventPlane : public StMaker {
   StPicoDstMaker *mPicoDstMaker;
   StPicoDst      *mPicoDst;
   StPicoEvent	 *mPicoEvent;
-  StPicoD0Event  *mPicoD0Event;
   StRefMultCorr* mgrefmultCorrUtil;
   
   bool	mAcceptEvent;
