@@ -32,17 +32,17 @@ class StEventPlane : public StMaker {
   void getEventInfo();
   int calculateEventPlane();
 
-  Int_t   getCentrality() const;
-  Float_t getEventPlane() const;
-  Float_t getEventPlane1() const;
-  Float_t getEventPlane2() const;
-  Float_t getEventPlaneEtaPlus() const;
-  Float_t getEventPlaneEtaMinus() const;
-  Float_t getResolutionRandom() const;
-  Float_t getResolutionEta() const;
+  int   getCentrality() const;
+  float getEventPlane() const;
+  float getEventPlane1() const;
+  float getEventPlane2() const;
+  float getEventPlaneEtaPlus() const;
+  float getEventPlaneEtaMinus() const;
+  float getResolutionRandom() const;
+  float getResolutionEta() const;
 
-  Int_t   getRunId() const;
-  Bool_t getAcceptEvent() const;
+  int   getRunId() const;
+  bool getAcceptEvent() const;
 
  private:
   StPicoDstMaker* mPicoDstMaker;
@@ -53,12 +53,12 @@ class StEventPlane : public StMaker {
   bool	mAcceptEvent;
   bool	mAcceptQvectorFile;
   bool	mAcceptQvectorFiletmp;
-  Int_t         mCent;
-  Int_t         mRunnumber;
-  Float_t       mBField;
+  int         mCent;
+  int         mRunnumber;
+  float       mBField;
   StThreeVectorF mVertexPos;
-  Float_t       mEventPlane, mEventPlane1, mEventPlane2, mEventPlaneEtaPlus, mEventPlaneEtaMinus;
-  Float_t       mResolutionRandom, mResolutionEta;
+  float       mEventPlane, mEventPlane1, mEventPlane2, mEventPlaneEtaPlus, mEventPlaneEtaMinus;
+  float       mResolutionRandom, mResolutionEta;
   TVector2    mQ, mQ1, mQ2, mQEtaPlus, mQEtaMinus;
   TString     mQVectorDir;
   TProfile*  prfQxCentEtaPlus;
@@ -67,32 +67,32 @@ class StEventPlane : public StMaker {
   TProfile*  prfQyCentEtaMinus;    
   
   //Event cuts
-  Float_t mVzMax;
-  Float_t mRefMultMin;
-  Float_t mDeltaVzMax;
+  float mVzMax;
+  float mRefMultMin;
+  float mDeltaVzMax;
   
   //Track cuts
-  UShort_t mNHitsFitMin;
+  unsigned short mNHitsFitMin;
   
   //Track cuts for event plane
-  Float_t mEtaMaxEventPlane;
-  Float_t mPtMinEventPlane;
-  Float_t mPtMaxEventPlane;
-  Float_t mDcaMaxEventPlane;
+  float mEtaMaxEventPlane;
+  float mPtMinEventPlane;
+  float mPtMaxEventPlane;
+  float mDcaMaxEventPlane;
   
-  Float_t      qxTracks[maxNTracks];
-  Float_t      qyTracks[maxNTracks];
+  float      qxTracks[maxNTracks];
+  float      qyTracks[maxNTracks];
   
   ClassDef(StEventPlane, 0)
 };
-inline Int_t   StEventPlane::getCentrality() const { return (Int_t) mCent; }
-inline Float_t StEventPlane::getEventPlane() const { return (Float_t) mEventPlane; }
-inline Float_t StEventPlane::getEventPlane1() const { return (Float_t) mEventPlane1; }
-inline Float_t StEventPlane::getEventPlane2() const { return (Float_t) mEventPlane2; }
-inline Float_t StEventPlane::getEventPlaneEtaPlus() const { return (Float_t) mEventPlaneEtaPlus; }
-inline Float_t StEventPlane::getEventPlaneEtaMinus() const { return (Float_t) mEventPlaneEtaMinus; }
-inline Float_t StEventPlane::getResolutionRandom() const { return (Float_t) mResolutionRandom; }
-inline Float_t StEventPlane::getResolutionEta() const { return (Float_t) mResolutionEta; }
-inline Int_t   StEventPlane::getRunId() const { return (Int_t) mRunnumber; }
-inline Bool_t  StEventPlane::getAcceptEvent() const { return (Bool_t)  mAcceptQvectorFile && mAcceptQvectorFiletmp; }
+inline int   StEventPlane::getCentrality() const { return mCent; }
+inline float StEventPlane::getEventPlane() const { return mEventPlane; }
+inline float StEventPlane::getEventPlane1() const { return mEventPlane1; }
+inline float StEventPlane::getEventPlane2() const { return mEventPlane2; }
+inline float StEventPlane::getEventPlaneEtaPlus() const  { return mEventPlaneEtaPlus; }
+inline float StEventPlane::getEventPlaneEtaMinus() const { return mEventPlaneEtaMinus; }
+inline float StEventPlane::getResolutionRandom() const { return mResolutionRandom; }
+inline float StEventPlane::getResolutionEta() const { return mResolutionEta; }
+inline int   StEventPlane::getRunId() const { return mRunnumber; }
+inline bool  StEventPlane::getAcceptEvent() const { return mAcceptQvectorFile && mAcceptQvectorFiletmp; }
 #endif
