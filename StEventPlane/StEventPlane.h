@@ -36,8 +36,6 @@ class StEventPlane : public StMaker {
   
   virtual Int_t Init();
   virtual Int_t Make();
-  virtual void  Clear(Option_t* opt="");
-  virtual Int_t Finish();
   
   int   getCentrality() const;
   float getEventPlane() const;
