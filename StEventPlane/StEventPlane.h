@@ -71,7 +71,6 @@ class StEventPlane : public StMaker {
   float       mEventPlane, mEventPlane1, mEventPlane2, mEventPlaneEtaPlus, mEventPlaneEtaMinus;
   float       mResolutionRandom, mResolutionEta;
   TVector2    mQ, mQ1, mQ2, mQEtaPlus, mQEtaMinus;
-  TString     mQVectorDir;
   TProfile*  prfQxCentEtaPlus;
   TProfile*  prfQyCentEtaPlus;
   TProfile*  prfQxCentEtaMinus;

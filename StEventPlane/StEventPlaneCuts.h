@@ -12,8 +12,12 @@
 #ifndef StEventPlaneConstants_H
 #define StEventPlaneConstants_H
 
+#include "TString.h"
+
 namespace eventPlaneConstants
 {
+
+  TString qVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
   //Event Cuts
   float const vzMax = 6.0;
   float const deltaVzMax = 3.0;

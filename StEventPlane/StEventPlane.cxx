@@ -40,8 +40,6 @@ StEventPlane::~StEventPlane()
 //-----------------------------------------------------------------------------
 Int_t StEventPlane::Init()
 {
-   mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
-
    StRefMultCorr* mgrefmultCorrUtil = new StRefMultCorr("grefmult");
 
    return kStOK;
@@ -128,7 +126,7 @@ void StEventPlane::getRunInfo(int runNumber)
 {
    mRunNumber = runNumber;
    char fileName[256];
-   sprintf(fileName, "%s/%i.qVector.root", mQVectorDir.Data(), mRunNumber);
+   sprintf(fileName, "%s/%i.qVector.root", eventPlaneConstants:qVectorDir.Data(), mRunNumber);
    cout << "load qVector file: " << fileName << endl;
    TFile* fQVector = new TFile(fileName);
    fQVector->GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
