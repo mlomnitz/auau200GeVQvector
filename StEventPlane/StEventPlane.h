@@ -1,3 +1,14 @@
+/* **************************************************
+ *  Authors:  Mustafa Mustafa (mmustafa@lbl.gov)
+ *            Hao Qiu         (hqiu@lbl.gov)
+ *            **Guannan Xie     (guannanxie@lbl.gov)
+ *
+ *            ** code maintainer
+ *
+ * **************************************************
+ */
+
+
 #ifndef STAR_StEventPlane
 #define STAR_StEventPlane
 

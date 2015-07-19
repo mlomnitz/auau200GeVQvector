@@ -1,10 +1,16 @@
-#ifndef StEventPlaneConstants_H
-#define StEventPlaneConstants_H
-
 /* **************************************************
+ *  Authors:  Mustafa Mustafa (mmustafa@lbl.gov)
+ *            Hao Qiu         (hqiu@lbl.gov)
+ *            **Guannan Xie     (guannanxie@lbl.gov)
+ *
+ *            ** code maintainer
  *
  * **************************************************
  */
+
+
+#ifndef StEventPlaneConstants_H
+#define StEventPlaneConstants_H
 
 namespace eventPlaneConstants
 {
