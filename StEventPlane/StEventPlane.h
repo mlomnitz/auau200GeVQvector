@@ -32,17 +32,17 @@ class StEventPlane : public StMaker {
   void getEventInfo();
   int calculateEventPlane();
 
-  Int_t   getCentrality() const { return (Int_t) mCent; }
-  Float_t getEventPlane() const { return (Float_t) mEventPlane; }
-  Float_t getEventPlane1() const { return (Float_t) mEventPlane1; }
-  Float_t getEventPlane2() const { return (Float_t) mEventPlane2; }
-  Float_t getEventPlaneEtaPlus() const { return (Float_t) mEventPlaneEtaPlus; }
-  Float_t getEventPlaneEtaMinus() const { return (Float_t) mEventPlaneEtaMinus; }
-  Float_t getResolutionRandom() const { return (Float_t) mResolutionRandom; }
-  Float_t getResolutionEta() const { return (Float_t) mResolutionEta; }
+  Int_t   getCentrality() const;
+  Float_t getEventPlane() const;
+  Float_t getEventPlane1() const;
+  Float_t getEventPlane2() const;
+  Float_t getEventPlaneEtaPlus() const;
+  Float_t getEventPlaneEtaMinus() const;
+  Float_t getResolutionRandom() const;
+  Float_t getResolutionEta() const;
 
-  Int_t   getRunId() const { return (Int_t) mRunnumber; }
-  Bool_t getAcceptEvent() const { return (Bool_t)  mAcceptQvectorFile && mAcceptQvectorFiletmp; }
+  Int_t   getRunId() const;
+  Bool_t getAcceptEvent() const;
 
  private:
   StPicoDstMaker *mPicoDstMaker;
@@ -85,6 +85,14 @@ class StEventPlane : public StMaker {
   
   ClassDef(StEventPlane, 1)
 };
-
-
+inline Int_t   StEventPlane::getCentrality() const { return (Int_t) mCent; }
+inline Float_t StEventPlane::getEventPlane() const { return (Float_t) mEventPlane; }
+inline Float_t StEventPlane::getEventPlane1() const { return (Float_t) mEventPlane1; }
+inline Float_t StEventPlane::getEventPlane2() const { return (Float_t) mEventPlane2; }
+inline Float_t StEventPlane::getEventPlaneEtaPlus() const { return (Float_t) mEventPlaneEtaPlus; }
+inline Float_t StEventPlane::getEventPlaneEtaMinus() const { return (Float_t) mEventPlaneEtaMinus; }
+inline Float_t StEventPlane::getResolutionRandom() const { return (Float_t) mResolutionRandom; }
+inline Float_t StEventPlane::getResolutionEta() const { return (Float_t) mResolutionEta; }
+inline Int_t   StEventPlane::getRunId() const { return (Int_t) mRunnumber; }
+inline Bool_t  StEventPlane::getAcceptEvent() const { return (Bool_t)  mAcceptQvectorFile && mAcceptQvectorFiletmp; }
 #endif
