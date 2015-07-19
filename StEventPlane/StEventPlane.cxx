@@ -136,7 +136,7 @@ int StEventPlane::calculateEventPlane()
 
    // pre-loop to count tracks for event plane, prepare for shuffle
    int nTracksForEventPlane = 0;
-   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
+   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
    {
       StPicoTrack* picoTrack = (StPicoTrack*) mPicoDst->track(iTrack);
       if (!picoTrack)
@@ -162,7 +162,7 @@ int StEventPlane::calculateEventPlane()
 
    int indexTrack[nTracksForEventPlane];
    int Scount = nTracksForEventPlane / 2;
-   for (int q = 0; q < nTracksForEventPlane; q++) indexTrack[q] = q;
+   for (int q = 0; q < nTracksForEventPlane; ++q) indexTrack[q] = q;
    random_shuffle(indexTrack, indexTrack + nTracksForEventPlane);
    int iTrackForEventPlane = 0;
 
@@ -171,7 +171,7 @@ int StEventPlane::calculateEventPlane()
    float Qx1 = 0., Qy1 = 0., Qx2 = 0., Qy2 = 0.;
    float QxEtaPlus = 0., QyEtaPlus = 0., QxEtaMinus = 0., QyEtaMinus = 0.;
    float vertexZ = mVertexPos.z();
-   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
+   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
    {
       StPicoTrack* picoTrack = (StPicoTrack*) mPicoDst->track(iTrack);
       if (!picoTrack)
