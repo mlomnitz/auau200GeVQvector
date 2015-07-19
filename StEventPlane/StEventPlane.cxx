@@ -25,7 +25,7 @@ ClassImp(StEventPlane)
 
 //-----------------------------------------------------------------------------
 StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMultCorr* grefmultCorrUtil)
-   : StMaker(name), mPicoDstMaker(picoMaker), mPicoDst(0),  mgrefmultCorrUtil(grefmultCorrUtil),
+   : StMaker(name), mPicoDstMaker(picoMaker), mPicoDst(NULL),  mPicoEvent(NULL), mgrefmultCorrUtil(grefmultCorrUtil),
      mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), mResolutionRandom(0), mResolutionEta(0)
 {
 }
