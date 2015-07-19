@@ -41,21 +41,21 @@ Int_t StEventPlane::Make()
 {
    if (!mPicoDstMaker)
    {
-      LOG_ERR << " No PicoDstMaker! Skip! " << endm;
+      LOG_ERROR << " No PicoDstMaker! Skip! " << endm;
       return kStErr;
    }
 
    mPicoDst = mPicoDstMaker->picoDst();
    if (!mPicoDst)
    {
-      LOG_ERR << " No PicoDst! Skip! " << endm;
+      LOG_ERROR << " No PicoDst! Skip! " << endm;
       return kStErr;
    }
 
    mPicoEvent = (StPicoEvent*)mPicoDst->event();
    if (!mPicoEvent)
    {
-      LOG_ERR << "Error opening picoDst Event, skip!" << endm;
+      LOG_ERROR << "Error opening picoDst Event, skip!" << endm;
       return kStErr;
    }
    if (mRunNumber != mPicoEvent->runId()) getRunInfo(mPicoEvent->runId());
