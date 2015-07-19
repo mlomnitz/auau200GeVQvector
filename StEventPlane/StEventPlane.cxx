@@ -61,17 +61,23 @@ Int_t StEventPlane::Make()
 {
    if (!mPicoDstMaker)
    {
-      LOG_WARN << " No PicoDstMaker! Skip! " << endm;
-      return kStWarn;
+      LOG_ERR << " No PicoDstMaker! Skip! " << endm;
+      return kStErr;
    }
 
    mPicoDst = mPicoDstMaker->picoDst();
    if (!mPicoDst)
    {
-      LOG_WARN << " No PicoDst! Skip! " << endm;
-      return kStWarn;
+      LOG_ERR << " No PicoDst! Skip! " << endm;
+      return kStErr;
    }
 
+   mPicoEvent = (StPicoEvent*)mPicoDst->event();
+   if (!mPicoEvent)
+   {
+      LOG_ERR << "Error opening picoDst Event, skip!" << endm;
+      return kStErr;
+   }
    if (mRunNumber != mPicoEvent->runId()) getRunInfo(mPicoEvent->runId());
 
    getEventInfo();//get event info
@@ -95,24 +101,9 @@ void StEventPlane::getEventInfo()
 {
    mAcceptEvent = false;
 
-   if (!mPicoDst) return;
-
-   //Load event
-   mPicoEvent = (StPicoEvent*)mPicoDst->event();
-   if (!mPicoEvent)
-   {
-      cerr << "Error opening picoDst Event, skip!" << endl;
-      return;
-   }
-
    //Remove bad vertices
    mVertexPos = mPicoEvent->primaryVertex();
 
-   if (!mgrefmultCorrUtil)
-   {
-      LOG_WARN << " No mgrefmultCorrUtil! Skip! " << endl;
-      return;
-   }
    mgrefmultCorrUtil->init(mPicoDst->event()->runId());
    mgrefmultCorrUtil->initEvent(mPicoDst->event()->grefMult(), mVertexPos.z(), mPicoDst->event()->ZDCx()) ;
    mCent  = mgrefmultCorrUtil->getCentralityBin9();
