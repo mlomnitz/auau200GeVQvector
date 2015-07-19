@@ -42,6 +42,7 @@ class StEventPlane : public StMaker {
 
  private:
   void getEventInfo();
+  void getRunInfo(int runNumber);
   int calculateEventPlane();
 
   StPicoDstMaker* mPicoDstMaker;
@@ -53,7 +54,7 @@ class StEventPlane : public StMaker {
   bool	mAcceptQvectorFile;
   bool	mAcceptQvectorFiletmp;
   int         mCent;
-  int         mRunnumber;
+  int         mRunNumber;
   float       mBField;
   StThreeVectorF mVertexPos;
   float       mEventPlane, mEventPlane1, mEventPlane2, mEventPlaneEtaPlus, mEventPlaneEtaMinus;
@@ -78,6 +79,6 @@ inline float StEventPlane::getEventPlaneEtaPlus() const  { return mEventPlaneEta
 inline float StEventPlane::getEventPlaneEtaMinus() const { return mEventPlaneEtaMinus; }
 inline float StEventPlane::getResolutionRandom() const { return mResolutionRandom; }
 inline float StEventPlane::getResolutionEta() const { return mResolutionEta; }
-inline int   StEventPlane::getRunId() const { return mRunnumber; }
+inline int   StEventPlane::getRunId() const { return mRunNumber; }
 inline bool  StEventPlane::getAcceptEvent() const { return mAcceptQvectorFile && mAcceptQvectorFiletmp; }
 #endif

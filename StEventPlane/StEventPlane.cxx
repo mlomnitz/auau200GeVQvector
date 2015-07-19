@@ -42,7 +42,7 @@ Int_t StEventPlane::Init()
    mAcceptEvent = false;
    mAcceptQvectorFile = false;
    mAcceptQvectorFiletmp = true;
-   mRunnumber = 0;
+   mRunNumber = 0;
    mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
 
    StRefMultCorr* mgrefmultCorrUtil = new StRefMultCorr("grefmult");
@@ -76,6 +76,8 @@ Int_t StEventPlane::Make()
       LOG_WARN << " No PicoDst! Skip! " << endm;
       return kStWarn;
    }
+
+   if (mRunNumber != mPicoEvent->runId()) getRunInfo(mPicoEvent->runId());
 
    getEventInfo();//get event info
 
@@ -122,37 +124,33 @@ void StEventPlane::getEventInfo()
 
    mAcceptEvent = true;
 
-   if (mRunnumber != mPicoEvent->runId())
+   mBField = mPicoEvent->bField();
+}
+
+void StEventPlane::getRunInfo(int runNumber)
+{
+   mRunNumber = runNumber;
+   char fileName[256];
+   sprintf(fileName, "%s/%i.qVector.root", mQVectorDir.Data(), mRunNumber);
+   cout << "load qVector file: " << fileName << endl;
+   TFile* fQVector = new TFile(fileName);
+   fQVector->GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
+   if (!prfQxCentEtaPlus)
    {
-      mRunnumber = mPicoEvent->runId();
-      char fileName[256];
-      sprintf(fileName, "%s/%i.qVector.root", mQVectorDir.Data(), mRunnumber);
-      cout << "load qVector file: " << fileName << endl;
-      TFile* fQVector = new TFile(fileName);
-      fQVector->GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
-      if (!prfQxCentEtaPlus)
-      {
-         cout << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endl;
-         mAcceptQvectorFile = false;
-         mAcceptQvectorFiletmp = false;
-         return;
-      }
-      else
-      {
-         mAcceptQvectorFile = true;
-         mAcceptQvectorFiletmp = true;
-      }
-      prfQxCentEtaPlus = (TProfile*)fQVector->Get("prfQxCentEtaPlus");
-      prfQyCentEtaPlus = (TProfile*)fQVector->Get("prfQyCentEtaPlus");
-      prfQxCentEtaMinus = (TProfile*)fQVector->Get("prfQxCentEtaMinus");
-      prfQyCentEtaMinus = (TProfile*)fQVector->Get("prfQyCentEtaMinus");
+     cout << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endl;
+     mAcceptQvectorFile = false;
+     mAcceptQvectorFiletmp = false;
+     return;
    }
    else
    {
-      mAcceptQvectorFile = true;
+     mAcceptQvectorFile = true;
+     mAcceptQvectorFiletmp = true;
    }
-
-   mBField = mPicoEvent->bField();
+   prfQxCentEtaPlus = (TProfile*)fQVector->Get("prfQxCentEtaPlus");
+   prfQyCentEtaPlus = (TProfile*)fQVector->Get("prfQyCentEtaPlus");
+   prfQxCentEtaMinus = (TProfile*)fQVector->Get("prfQxCentEtaMinus");
+   prfQyCentEtaMinus = (TProfile*)fQVector->Get("prfQyCentEtaMinus");
 }
 
 /*----------------------------------------------------------------------------------------------------------------------*/
