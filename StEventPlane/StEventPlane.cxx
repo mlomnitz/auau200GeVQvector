@@ -39,7 +39,6 @@ StEventPlane::~StEventPlane()
 //-----------------------------------------------------------------------------
 Int_t StEventPlane::Init()
 {
-
    mAcceptEvent = false;
    mAcceptQvectorFile = false;
    mAcceptQvectorFiletmp = true;
@@ -54,7 +53,6 @@ Int_t StEventPlane::Init()
 //-----------------------------------------------------------------------------
 Int_t StEventPlane::Finish()
 {
-//  mFileOut->Write();
    return kStOK;
 }
 
@@ -121,7 +119,6 @@ void StEventPlane::getEventInfo()
    mgrefmultCorrUtil->init(mPicoDst->event()->runId());
    mgrefmultCorrUtil->initEvent(mPicoDst->event()->grefMult(), mVertexPos.z(), mPicoDst->event()->ZDCx()) ;
    mCent  = mgrefmultCorrUtil->getCentralityBin9();
-
 
    mAcceptEvent = true;
 
