@@ -1,4 +1,9 @@
-#include "StEventPlane.h"
+#include <iostream>
+#include <cmath>
+
+#include "TFile.h"
+#include "TProfile.h"
+
 #include "StPicoDstMaker/StPicoDst.h"
 #include "StPicoDstMaker/StPicoEvent.h"
 #include "StPicoDstMaker/StPicoTrack.h"
@@ -8,79 +13,26 @@
 #include "StRoot/StRefMultCorr/StRefMultCorr.h"
 #include "StRoot/StRefMultCorr/CentralityMaker.h"
 
-#include "TH1F.h"
-#include "TH2F.h"
-#include "TH3F.h"
-#include "TFile.h"
-#include "TProfile.h"
-#include "TClonesArray.h"
-#include "TTree.h"
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <cmath>
+#include "StEventPlane.h"
 
 ClassImp(StEventPlane)
 
 //-----------------------------------------------------------------------------
 StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMultCorr* grefmultCorrUtil)
-   : StMaker(name), mPicoDstMaker(picoMaker), mPicoDst(0),  mgrefmultCorrUtil(grefmultCorrUtil),
-     mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), mResolutionRandom(0), mResolutionEta(0)
+   : StMaker(name), mPicoDstMaker(picoMaker), mPicoDst(NULL),  mPicoEvent(NULL), mgrefmultCorrUtil(grefmultCorrUtil),
+     mAcceptEvent(false), mAcceptQvectorFile(false), mAcceptQvectorFiletmp(true), mCent(-1), mRunNumber(0), mBField(-999.),mVertexPos(-999,-999,-999),
+     mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), mResolutionRandom(0), mResolutionEta(0),
+     mQ(-999,-999), mQ1(-999,-999), mQ2(-999,-999), mQEtaPlus(-999,-999), mQEtaMinus(-999,-999),
+     prfQxCentEtaPlus(NULL), prfQyCentEtaPlus(NULL), prfQxCentEtaMinu(NULL), prfQyCentEtaMinus(NULL)
 {
-}
-
-//-----------------------------------------------------------------------------
-StEventPlane::~StEventPlane()
-{
-   /*  */
 }
 
 //-----------------------------------------------------------------------------
 Int_t StEventPlane::Init()
 {
-
-   mAcceptEvent = false;
-   mAcceptQvectorFile = false;
-   mAcceptQvectorFiletmp = true;
-   mRunnumber = 0;
-   mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
-
-   //Event Cuts
-   mVzMax = 6.0;
-   mDeltaVzMax = 3.0;
-
-   //Track Cuts
-   mNHitsFitMin = 15;
-
-   //Track cuts for event plane
-   mEtaMaxEventPlane = 1.0;
-   mPtMinEventPlane = 0.15;
-   mPtMaxEventPlane = 2.;
-   mDcaMaxEventPlane = 3.0;
-
-
-
-// // event plane and Q vector
-   float PI = TMath::Pi();
-
-// // D0 v2 histograms
-
    StRefMultCorr* mgrefmultCorrUtil = new StRefMultCorr("grefmult");
 
    return kStOK;
-}
-
-//-----------------------------------------------------------------------------
-Int_t StEventPlane::Finish()
-{
-//  mFileOut->Write();
-   return kStOK;
-}
-
-//-----------------------------------------------------------------------------
-void StEventPlane::Clear(Option_t *opt)
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -88,16 +40,24 @@ Int_t StEventPlane::Make()
 {
    if (!mPicoDstMaker)
    {
-      LOG_WARN << " No PicoDstMaker! Skip! " << endm;
-      return kStWarn;
+      LOG_ERR << " No PicoDstMaker! Skip! " << endm;
+      return kStErr;
    }
 
    mPicoDst = mPicoDstMaker->picoDst();
    if (!mPicoDst)
    {
-      LOG_WARN << " No PicoDst! Skip! " << endm;
-      return kStWarn;
+      LOG_ERR << " No PicoDst! Skip! " << endm;
+      return kStErr;
    }
+
+   mPicoEvent = (StPicoEvent*)mPicoDst->event();
+   if (!mPicoEvent)
+   {
+      LOG_ERR << "Error opening picoDst Event, skip!" << endm;
+      return kStErr;
+   }
+   if (mRunNumber != mPicoEvent->runId()) getRunInfo(mPicoEvent->runId());
 
    getEventInfo();//get event info
 
@@ -120,62 +80,46 @@ void StEventPlane::getEventInfo()
 {
    mAcceptEvent = false;
 
-   if (!mPicoDst) return;
-
-   //Load event
-   mPicoEvent = (StPicoEvent*)mPicoDst->event();
-   if (!mPicoEvent)
-   {
-      cerr << "Error opening picoDst Event, skip!" << endl;
-      return;
-   }
-
    //Remove bad vertices
    mVertexPos = mPicoEvent->primaryVertex();
 
-   if (!mgrefmultCorrUtil)
-   {
-      LOG_WARN << " No mgrefmultCorrUtil! Skip! " << endl;
-      return;
-   }
    mgrefmultCorrUtil->init(mPicoDst->event()->runId());
    mgrefmultCorrUtil->initEvent(mPicoDst->event()->grefMult(), mVertexPos.z(), mPicoDst->event()->ZDCx()) ;
    mCent  = mgrefmultCorrUtil->getCentralityBin9();
 
-
    mAcceptEvent = true;
 
-   if (mRunnumber != mPicoEvent->runId())
+   mBField = mPicoEvent->bField();
+}
+
+void StEventPlane::getRunInfo(int const runNumber)
+{
+   mRunNumber = runNumber;
+   char fileName[256];
+   sprintf(fileName, "%s/%i.qVector.root", EventPlaneConstants:qVectorDir.Data(), mRunNumber);
+   cout << "load qVector file: " << fileName << endl;
+   TFile fQVector(fileName);
+
+   fQVector.GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
+   if (!prfQxCentEtaPlus)
    {
-      mRunnumber = mPicoEvent->runId();
-      char fileName[256];
-      sprintf(fileName, "%s/%i.qVector.root", mQVectorDir.Data(), mRunnumber);
-      cout << "load qVector file: " << fileName << endl;
-      TFile* fQVector = new TFile(fileName);
-      fQVector->GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
-      if (!prfQxCentEtaPlus)
-      {
-         cout << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endl;
-         mAcceptQvectorFile = false;
-         mAcceptQvectorFiletmp = false;
-         return;
-      }
-      else
-      {
-         mAcceptQvectorFile = true;
-         mAcceptQvectorFiletmp = true;
-      }
-      prfQxCentEtaPlus = (TProfile*)fQVector->Get("prfQxCentEtaPlus");
-      prfQyCentEtaPlus = (TProfile*)fQVector->Get("prfQyCentEtaPlus");
-      prfQxCentEtaMinus = (TProfile*)fQVector->Get("prfQxCentEtaMinus");
-      prfQyCentEtaMinus = (TProfile*)fQVector->Get("prfQyCentEtaMinus");
+     LOG_INFO << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endm;
+     mAcceptQvectorFile = false;
+     mAcceptQvectorFiletmp = false;
+     return;
    }
    else
    {
-      mAcceptQvectorFile = true;
+     mAcceptQvectorFile = true;
+     mAcceptQvectorFiletmp = true;
    }
 
-   mBField = mPicoEvent->bField();
+   prfQxCentEtaPlus =  (TProfile*)fQVector.Get("prfQxCentEtaPlus")->Clone("prfQxCentEtaPlus");
+   prfQyCentEtaPlus =  (TProfile*)fQVector.Get("prfQyCentEtaPlus")->Clone("prfQyCentEtaPlus");
+   prfQxCentEtaMinus = (TProfile*)fQVector.Get("prfQxCentEtaMinus")->Clone("prfQxCentEtaMinus");
+   prfQyCentEtaMinus = (TProfile*)fQVector.Get("prfQyCentEtaMinus")->Clone("prfQyCentEtaMinus");
+
+   fQVector.Close();
 }
 
 /*----------------------------------------------------------------------------------------------------------------------*/
@@ -186,7 +130,7 @@ int StEventPlane::calculateEventPlane()
 
    // pre-loop to count tracks for event plane, prepare for shuffle
    int nTracksForEventPlane = 0;
-   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
+   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
    {
       StPicoTrack* picoTrack = (StPicoTrack*) mPicoDst->track(iTrack);
       if (!picoTrack)
@@ -194,25 +138,25 @@ int StEventPlane::calculateEventPlane()
          break;
       }
 
-      if (picoTrack->nHitsFit() < mNHitsFitMin) continue;
+      if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
 
       StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
       float dca = helix->geometricSignedDistance(mVertexPos);
-      if (TMath::Abs(dca) > mDcaMaxEventPlane) continue;
+      if (TMath::Abs(dca) > EventPlaneConstants::dcaMaxEventPlane) continue;
 
       float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
       StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
-      if (fabs(eta) > mEtaMaxEventPlane) continue;
-      if (pt < mPtMinEventPlane || pt > mPtMaxEventPlane) continue;
+      if (fabs(eta) > EventPlaneConstants::etaMaxEventPlane) continue;
+      if (pt < EventPlaneConstants::ptMinEventPlane || pt > EventPlaneConstants::ptMaxEventPlane) continue;
 
       nTracksForEventPlane++;
    }
 
    int indexTrack[nTracksForEventPlane];
    int Scount = nTracksForEventPlane / 2;
-   for (int q = 0; q < nTracksForEventPlane; q++) indexTrack[q] = q;
+   for (int q = 0; q < nTracksForEventPlane; ++q) indexTrack[q] = q;
    random_shuffle(indexTrack, indexTrack + nTracksForEventPlane);
    int iTrackForEventPlane = 0;
 
@@ -221,7 +165,7 @@ int StEventPlane::calculateEventPlane()
    float Qx1 = 0., Qy1 = 0., Qx2 = 0., Qy2 = 0.;
    float QxEtaPlus = 0., QyEtaPlus = 0., QxEtaMinus = 0., QyEtaMinus = 0.;
    float vertexZ = mVertexPos.z();
-   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
+   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
    {
       StPicoTrack* picoTrack = (StPicoTrack*) mPicoDst->track(iTrack);
       if (!picoTrack)
@@ -229,19 +173,19 @@ int StEventPlane::calculateEventPlane()
          break;
       }
 
-      if (picoTrack->nHitsFit() < mNHitsFitMin) continue;
+      if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
 
       StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
       float dca = helix->geometricSignedDistance(mVertexPos);
-      if (TMath::Abs(dca) > mDcaMaxEventPlane) continue;
+      if (TMath::Abs(dca) > EventPlaneConstants::dcaMaxEventPlane) continue;
 
       float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
       StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
       float phi = momentum.phi();
-      if (fabs(eta) > mEtaMaxEventPlane) continue;
-      if (pt < mPtMinEventPlane || pt > mPtMaxEventPlane) continue;
+      if (fabs(eta) > EventPlaneConstants::etaMaxEventPlane) continue;
+      if (pt < EventPlaneConstants::ptMinEventPlane || pt > EventPlaneConstants::ptMaxEventPlane) continue;
 
 
       float qx = cos(2 * phi) * pt;
