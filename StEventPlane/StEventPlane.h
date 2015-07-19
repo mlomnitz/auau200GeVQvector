@@ -27,7 +27,6 @@ const int maxNTracks = 20000;
 class StEventPlane : public StMaker {
   public:
   StEventPlane(const char* name, StPicoDstMaker* picoMaker, StRefMultCorr* grefmultCorrUtil);
-  virtual ~StEventPlane();
   
   virtual Int_t Init();
   virtual Int_t Make();
