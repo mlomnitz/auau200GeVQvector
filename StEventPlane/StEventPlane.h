@@ -83,7 +83,7 @@ class StEventPlane : public StMaker {
   Float_t      qxTracks[maxNTracks];
   Float_t      qyTracks[maxNTracks];
   
-  ClassDef(StEventPlane, 1)
+  ClassDef(StEventPlane, 0)
 };
 inline Int_t   StEventPlane::getCentrality() const { return (Int_t) mCent; }
 inline Float_t StEventPlane::getEventPlane() const { return (Float_t) mEventPlane; }
