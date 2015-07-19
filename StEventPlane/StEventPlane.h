@@ -12,7 +12,6 @@
 #ifndef STAR_StEventPlane
 #define STAR_StEventPlane
 
-#include "TChain.h"
 #include "StMaker.h"
 #include "TVector2.h"
 #include "StThreeVectorF.hh"
@@ -21,10 +20,6 @@ class StPicoDst;
 class StPicoEvent;
 class StPicoDstMaker;
 class StRefMultCorr;
-class TH1I;
-class TH1F;
-class TH2F;
-class TH3F;
 class TProfile;
 
 const int maxNTracks = 20000;

@@ -1,4 +1,9 @@
-#include "StEventPlane.h"
+#include <iostream>
+#include <cmath>
+
+#include "TFile.h"
+#include "TProfile.h"
+
 #include "StPicoDstMaker/StPicoDst.h"
 #include "StPicoDstMaker/StPicoEvent.h"
 #include "StPicoDstMaker/StPicoTrack.h"
@@ -8,18 +13,7 @@
 #include "StRoot/StRefMultCorr/StRefMultCorr.h"
 #include "StRoot/StRefMultCorr/CentralityMaker.h"
 
-#include "TH1F.h"
-#include "TH2F.h"
-#include "TH3F.h"
-#include "TFile.h"
-#include "TProfile.h"
-#include "TClonesArray.h"
-#include "TTree.h"
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <cmath>
+#include "StEventPlane.h"
 
 ClassImp(StEventPlane)
 
