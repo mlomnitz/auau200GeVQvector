@@ -113,17 +113,18 @@ void StEventPlane::getEventInfo()
    mBField = mPicoEvent->bField();
 }
 
-void StEventPlane::getRunInfo(int runNumber)
+void StEventPlane::getRunInfo(int const runNumber)
 {
    mRunNumber = runNumber;
    char fileName[256];
    sprintf(fileName, "%s/%i.qVector.root", EventPlaneConstants:qVectorDir.Data(), mRunNumber);
    cout << "load qVector file: " << fileName << endl;
-   TFile* fQVector = new TFile(fileName);
-   fQVector->GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
+   TFile fQVector(fileName);
+
+   fQVector.GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
    if (!prfQxCentEtaPlus)
    {
-     cout << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endl;
+     LOG_INFO << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endm;
      mAcceptQvectorFile = false;
      mAcceptQvectorFiletmp = false;
      return;
@@ -133,10 +134,13 @@ void StEventPlane::getRunInfo(int runNumber)
      mAcceptQvectorFile = true;
      mAcceptQvectorFiletmp = true;
    }
-   prfQxCentEtaPlus = (TProfile*)fQVector->Get("prfQxCentEtaPlus");
-   prfQyCentEtaPlus = (TProfile*)fQVector->Get("prfQyCentEtaPlus");
-   prfQxCentEtaMinus = (TProfile*)fQVector->Get("prfQxCentEtaMinus");
-   prfQyCentEtaMinus = (TProfile*)fQVector->Get("prfQyCentEtaMinus");
+
+   prfQxCentEtaPlus =  (TProfile*)fQVector.Get("prfQxCentEtaPlus")->Clone("prfQxCentEtaPlus");
+   prfQyCentEtaPlus =  (TProfile*)fQVector.Get("prfQyCentEtaPlus")->Clone("prfQyCentEtaPlus");
+   prfQxCentEtaMinus = (TProfile*)fQVector.Get("prfQxCentEtaMinus")->Clone("prfQxCentEtaMinus");
+   prfQyCentEtaMinus = (TProfile*)fQVector.Get("prfQyCentEtaMinus")->Clone("prfQyCentEtaMinus");
+
+   fQVector.Close();
 }
 
 /*----------------------------------------------------------------------------------------------------------------------*/
