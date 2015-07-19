@@ -46,25 +46,8 @@ Int_t StEventPlane::Init()
    mRunnumber = 0;
    mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
 
-   //Event Cuts
-   mVzMax = 6.0;
-   mDeltaVzMax = 3.0;
-
-   //Track Cuts
-   mNHitsFitMin = 15;
-
-   //Track cuts for event plane
-   mEtaMaxEventPlane = 1.0;
-   mPtMinEventPlane = 0.15;
-   mPtMaxEventPlane = 2.;
-   mDcaMaxEventPlane = 3.0;
-
-
-
-// // event plane and Q vector
+   // event plane and Q vector
    float PI = TMath::Pi();
-
-// // D0 v2 histograms
 
    StRefMultCorr* mgrefmultCorrUtil = new StRefMultCorr("grefmult");
 
@@ -194,18 +177,18 @@ int StEventPlane::calculateEventPlane()
          break;
       }
 
-      if (picoTrack->nHitsFit() < mNHitsFitMin) continue;
+      if (picoTrack->nHitsFit() < eventPlaneConstants::nHitsFitMin) continue;
 
       StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
       float dca = helix->geometricSignedDistance(mVertexPos);
-      if (TMath::Abs(dca) > mDcaMaxEventPlane) continue;
+      if (TMath::Abs(dca) > eventPlaneConstants::dcaMaxEventPlane) continue;
 
       float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
       StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
-      if (fabs(eta) > mEtaMaxEventPlane) continue;
-      if (pt < mPtMinEventPlane || pt > mPtMaxEventPlane) continue;
+      if (fabs(eta) > eventPlaneConstants::etaMaxEventPlane) continue;
+      if (pt < eventPlaneConstants::ptMinEventPlane || pt > eventPlaneConstants::ptMaxEventPlane) continue;
 
       nTracksForEventPlane++;
    }
@@ -229,19 +212,19 @@ int StEventPlane::calculateEventPlane()
          break;
       }
 
-      if (picoTrack->nHitsFit() < mNHitsFitMin) continue;
+      if (picoTrack->nHitsFit() < eventPlaneConstants::nHitsFitMin) continue;
 
       StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
       float dca = helix->geometricSignedDistance(mVertexPos);
-      if (TMath::Abs(dca) > mDcaMaxEventPlane) continue;
+      if (TMath::Abs(dca) > eventPlaneConstants::dcaMaxEventPlane) continue;
 
       float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
       StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
       float phi = momentum.phi();
-      if (fabs(eta) > mEtaMaxEventPlane) continue;
-      if (pt < mPtMinEventPlane || pt > mPtMaxEventPlane) continue;
+      if (fabs(eta) > eventPlaneConstants::etaMaxEventPlane) continue;
+      if (pt < eventPlaneConstants::ptMinEventPlane || pt > eventPlaneConstants::ptMaxEventPlane) continue;
 
 
       float qx = cos(2 * phi) * pt;

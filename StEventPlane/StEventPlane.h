@@ -66,19 +66,7 @@ class StEventPlane : public StMaker {
   TProfile*  prfQxCentEtaMinus;
   TProfile*  prfQyCentEtaMinus;    
   
-  //Event cuts
-  float mVzMax;
   float mRefMultMin;
-  float mDeltaVzMax;
-  
-  //Track cuts
-  unsigned short mNHitsFitMin;
-  
-  //Track cuts for event plane
-  float mEtaMaxEventPlane;
-  float mPtMinEventPlane;
-  float mPtMaxEventPlane;
-  float mDcaMaxEventPlane;
   
   float      qxTracks[maxNTracks];
   float      qyTracks[maxNTracks];
