@@ -29,8 +29,6 @@ class StEventPlane : public StMaker {
   virtual Int_t Finish();
   
   int getEntries() const;
-  void getEventInfo();
-  int calculateEventPlane();
 
   int   getCentrality() const;
   float getEventPlane() const;
@@ -45,6 +43,9 @@ class StEventPlane : public StMaker {
   bool getAcceptEvent() const;
 
  private:
+  void getEventInfo();
+  int calculateEventPlane();
+
   StPicoDstMaker* mPicoDstMaker;
   StPicoDst*      mPicoDst;
   StPicoEvent*    mPicoEvent;
