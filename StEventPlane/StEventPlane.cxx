@@ -13,6 +13,7 @@
 #include "StRoot/StRefMultCorr/StRefMultCorr.h"
 #include "StRoot/StRefMultCorr/CentralityMaker.h"
 
+#include "StEventPlaneConstants.h"
 #include "StEventPlane.h"
 
 ClassImp(StEventPlane)
@@ -23,7 +24,7 @@ StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMul
      mAcceptEvent(false), mAcceptQvectorFile(false), mAcceptQvectorFiletmp(true), mCent(-1), mRunNumber(0), mBField(-999.),mVertexPos(-999,-999,-999),
      mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), mResolutionRandom(0), mResolutionEta(0),
      mQ(-999,-999), mQ1(-999,-999), mQ2(-999,-999), mQEtaPlus(-999,-999), mQEtaMinus(-999,-999),
-     prfQxCentEtaPlus(NULL), prfQyCentEtaPlus(NULL), prfQxCentEtaMinu(NULL), prfQyCentEtaMinus(NULL)
+     prfQxCentEtaPlus(NULL), prfQyCentEtaPlus(NULL), prfQxCentEtaMinus(NULL), prfQyCentEtaMinus(NULL)
 {
 }
 
