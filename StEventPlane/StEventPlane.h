@@ -28,8 +28,6 @@ class StEventPlane : public StMaker {
   virtual void  Clear(Option_t* opt="");
   virtual Int_t Finish();
   
-  int getEntries() const;
-
   int   getCentrality() const;
   float getEventPlane() const;
   float getEventPlane1() const;
