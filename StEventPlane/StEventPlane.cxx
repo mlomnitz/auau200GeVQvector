@@ -46,9 +46,6 @@ Int_t StEventPlane::Init()
    mRunnumber = 0;
    mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
 
-   // event plane and Q vector
-   float PI = TMath::Pi();
-
    StRefMultCorr* mgrefmultCorrUtil = new StRefMultCorr("grefmult");
 
    return kStOK;

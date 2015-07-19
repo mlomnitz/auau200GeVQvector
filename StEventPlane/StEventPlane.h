@@ -66,8 +66,6 @@ class StEventPlane : public StMaker {
   TProfile*  prfQxCentEtaMinus;
   TProfile*  prfQyCentEtaMinus;    
   
-  float mRefMultMin;
-  
   float      qxTracks[maxNTracks];
   float      qyTracks[maxNTracks];
   
