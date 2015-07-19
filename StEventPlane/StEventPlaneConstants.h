@@ -14,7 +14,7 @@
 
 #include "TString.h"
 
-namespace eventPlaneConstants
+namespace EventPlaneConstants
 {
 
   TString qVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
