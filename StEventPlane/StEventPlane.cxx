@@ -26,6 +26,7 @@ ClassImp(StEventPlane)
 //-----------------------------------------------------------------------------
 StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMultCorr* grefmultCorrUtil)
    : StMaker(name), mPicoDstMaker(picoMaker), mPicoDst(NULL),  mPicoEvent(NULL), mgrefmultCorrUtil(grefmultCorrUtil),
+     mAcceptEvent(false), mAcceptQvectorFile(false), mAcceptQvectorFiletmp(true), mCent(-1), mRunNumber(0),
      mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), mResolutionRandom(0), mResolutionEta(0)
 {
 }
@@ -39,10 +40,6 @@ StEventPlane::~StEventPlane()
 //-----------------------------------------------------------------------------
 Int_t StEventPlane::Init()
 {
-   mAcceptEvent = false;
-   mAcceptQvectorFile = false;
-   mAcceptQvectorFiletmp = true;
-   mRunNumber = 0;
    mQVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
 
    StRefMultCorr* mgrefmultCorrUtil = new StRefMultCorr("grefmult");
