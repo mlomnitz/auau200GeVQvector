@@ -97,7 +97,7 @@ void StEventPlane::getRunInfo(int const runNumber)
 {
    mRunNumber = runNumber;
    char fileName[256];
-   sprintf(fileName, "%s/%i.qVector.root", EventPlaneConstants:qVectorDir.Data(), mRunNumber);
+   sprintf(fileName, "%s/%i.qVector.root", EventPlaneConstants::qVectorDir.Data(), mRunNumber);
    cout << "load qVector file: " << fileName << endl;
    TFile fQVector(fileName);
 
