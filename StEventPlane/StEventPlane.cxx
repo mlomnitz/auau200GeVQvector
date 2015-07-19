@@ -59,6 +59,7 @@ Int_t StEventPlane::Make()
       return kStErr;
    }
    if (mRunNumber != mPicoEvent->runId()) getRunInfo(mPicoEvent->runId());
+   else mAcceptQvectorFile = true;
 
    getEventInfo();//get event info
 
