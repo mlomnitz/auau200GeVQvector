@@ -29,14 +29,6 @@ StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMul
 }
 
 //-----------------------------------------------------------------------------
-Int_t StEventPlane::Init()
-{
-   // StRefMultCorr* mgrefmultCorrUtil = new StRefMultCorr("grefmult");
-
-   return kStOK;
-}
-
-//-----------------------------------------------------------------------------
 Int_t StEventPlane::Make()
 {
    if (!mPicoDstMaker)

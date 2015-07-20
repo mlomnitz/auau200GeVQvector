@@ -28,7 +28,6 @@ class StEventPlane : public StMaker {
   public:
   StEventPlane(const char* name, StPicoDstMaker* picoMaker, StRefMultCorr* grefmultCorrUtil);
   
-  virtual Int_t Init();
   virtual Int_t Make();
   
   int   getCentrality() const;
