@@ -113,6 +113,11 @@ void StEventPlane::getRunInfo(int const runNumber)
    prfQxCentEtaMinus = (TProfile*)fQVector.Get("prfQxCentEtaMinus")->Clone("prfQxCentEtaMinus");
    prfQyCentEtaMinus = (TProfile*)fQVector.Get("prfQyCentEtaMinus")->Clone("prfQyCentEtaMinus");
 
+   prfQxCentEtaPlus->SetDirectory(0);
+   prfQyCentEtaPlus->SetDirectory(0);
+   prfQxCentEtaMinus->SetDirectory(0);
+   prfQyCentEtaMinus->SetDirectory(0);
+
    fQVector.Close();
 }
 
