@@ -17,7 +17,7 @@
 namespace EventPlaneConstants
 {
 
-  TString qVectorDir = "/global/homes/q/qiuh/myEliza17/D0v2/recenter2/qVectorRun";
+  TString qVectorDir = "/global/homes/q/qiuh/myProject/D0v2/recenter2/qVectorRun";
   //Event Cuts
   float const vzMax = 6.0;
   float const deltaVzMax = 3.0;
