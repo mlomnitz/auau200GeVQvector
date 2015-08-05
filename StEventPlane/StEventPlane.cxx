@@ -256,4 +256,14 @@ int StEventPlane::calculateEventPlane()
 
    return 0;
 }
+float StEventPlane::getEventPlane(int nTracksToExclude, int* indexTracksToExclude) const 
+{
+  TVector2 Qsub = mQ;
+  for(int i=0; i<nTracksToExclude; i++)
+    {
+      TVector2 qTrack(qxTracks[indexTracksToExclude[i]], qyTracks[indexTracksToExclude[i]]);
+      Qsub -= qTrack;
+    }
+  return Qsub.Phi() * 0.5;
+}
 
