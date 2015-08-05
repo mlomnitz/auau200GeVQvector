@@ -31,7 +31,7 @@ class StEventPlane : public StMaker {
   virtual Int_t Make();
   
   int   getCentrality() const;
-  float getEventPlane() const;
+  float getEventPlane(int nTracksToExclude=0, int* indexTracksToExclude=0) const;
   float getEventPlane1() const;
   float getEventPlane2() const;
   float getEventPlaneEtaPlus() const;
@@ -73,7 +73,6 @@ class StEventPlane : public StMaker {
   ClassDef(StEventPlane, 0)
 };
 inline int   StEventPlane::getCentrality() const { return mCent; }
-inline float StEventPlane::getEventPlane() const { return mEventPlane; }
 inline float StEventPlane::getEventPlane1() const { return mEventPlane1; }
 inline float StEventPlane::getEventPlane2() const { return mEventPlane2; }
 inline float StEventPlane::getEventPlaneEtaPlus() const  { return mEventPlaneEtaPlus; }
