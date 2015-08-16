@@ -104,7 +104,6 @@ Int_t StEventPlane::Make()
 
    getEventInfo();//get event info
 
-//  if (mAcceptEvent)
    if (mAcceptQvectorFile && mAcceptQvectorFiletmp)
    {
       mEventPlaneStatus = calculateEventPlane();
@@ -120,7 +119,6 @@ Int_t StEventPlane::Make()
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------*/
 void StEventPlane::getEventInfo()
 {
-   mAcceptEvent = false;
 
    //Remove bad vertices
    mVertexPos = mPicoEvent->primaryVertex();
@@ -129,7 +127,7 @@ void StEventPlane::getEventInfo()
    mgrefmultCorrUtil->initEvent(mPicoDst->event()->grefMult(), mVertexPos.z(), mPicoDst->event()->ZDCx()) ;
    mCent  = mgrefmultCorrUtil->getCentralityBin9();
 
-   mAcceptEvent = true;
+   mAcceptEvent = false;
 
    mBField = mPicoEvent->bField();
 
@@ -236,10 +234,12 @@ int StEventPlane::calculateEventPlane()
          break;
       }
 
+      if (mAcceptEvent) hNHitsFit->Fill(picoTrack->nHitsFit());
       if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
 
       StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
       float dca = helix->geometricSignedDistance(mVertexPos);
+      if (mAcceptEvent) hDca->Fill(dca);
       if (TMath::Abs(dca) > EventPlaneConstants::dcaMaxEventPlane) continue;
 
       float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
@@ -247,9 +247,15 @@ int StEventPlane::calculateEventPlane()
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
       float phi = momentum.phi();
+      if (mAcceptEvent) hEta->Fill(eta);
+      if (mAcceptEvent) hPt->Fill(pt);
       if (fabs(eta) > EventPlaneConstants::etaMaxEventPlane) continue;
       if (pt < EventPlaneConstants::ptMinEventPlane || pt > EventPlaneConstants::ptMaxEventPlane) continue;
 
+      if (mAcceptEvent && eta > 0 && vertexZ > 0) hPhiCentEtaPlusZPlus->Fill(mCent, phi);
+      if (mAcceptEvent && eta > 0 && vertexZ < 0) hPhiCentEtaPlusZMinus->Fill(mCent, phi);
+      if (mAcceptEvent && eta < 0 && vertexZ > 0) hPhiCentEtaMinusZPlus->Fill(mCent, phi);
+      if (mAcceptEvent && eta < 0 && vertexZ < 0) hPhiCentEtaMinusZMinus->Fill(mCent, phi);
 
       float qx = cos(2 * phi) * pt;
       float qy = sin(2 * phi) * pt;
@@ -318,8 +324,29 @@ int StEventPlane::calculateEventPlane()
    mResolutionRandom = cos(2.*(mEventPlane1 - mEventPlane2));
    mResolutionEta = cos(2.*(mEventPlaneEtaPlus - mEventPlaneEtaMinus));
 
+   if (mAcceptEvent)
+   {
+      hQyQxCent->Fill(mCent, Qx, Qy);
+      hEventPlaneCent->Fill(mCent, getEventPlane());
+
+      hQyQx1Cent->Fill(mCent, Qx1, Qy1);
+      hEventPlane1Cent->Fill(mCent, mEventPlane1);
+
+      hQyQx2Cent->Fill(mCent, Qx2, Qy2);
+      hEventPlane2Cent->Fill(mCent, mEventPlane2);
+
+      hQyQxEtaPlusCent->Fill(mCent, QxEtaPlus, QyEtaPlus);
+      hEventPlaneEtaPlusCent->Fill(mCent, mEventPlaneEtaPlus);
+
+      hQyQxEtaMinusCent->Fill(mCent, QxEtaMinus, QyEtaMinus);
+      hEventPlaneEtaMinusCent->Fill(mCent, mEventPlaneEtaMinus);
+
+      prfCosResolutionRandomCent->Fill(mCent, mResolutionRandom);
+      prfCosResolutionEtaCent->Fill(mCent, mResolutionEta);
+   }
    return 0;
 }
+
 float StEventPlane::getEventPlane(int nTracksToExclude, int* indexTracksToExclude) const
 {
    TVector2 Qsub = mQ;
@@ -330,6 +357,7 @@ float StEventPlane::getEventPlane(int nTracksToExclude, int* indexTracksToExclud
    }
    return Qsub.Phi() * 0.5;
 }
+
 void StEventPlane::calculateHadronV2() const
 {
    for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)

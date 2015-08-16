@@ -47,6 +47,8 @@ public:
    float getResolutionEta() const;
    void calculateHadronV2() const;
    int eventPlaneStatus() const;
+   TVector2 Q() const;
+   TVector2 q(int iTrack) const;
 
    int   getRunId() const;
    bool getAcceptEvent() const;
@@ -157,5 +159,14 @@ inline bool  StEventPlane::getAcceptEvent() const
 inline int StEventPlane::eventPlaneStatus() const
 {
    return mEventPlaneStatus;
+}
+inline TVector2 StEventPlane::Q() const
+{
+   return mQ;
+}
+inline TVector2 StEventPlane::q(int iTrack) const
+{
+   TVector2 q_(qxTracks[iTrack], qyTracks[iTrack]);
+   return q_;
 }
 #endif
