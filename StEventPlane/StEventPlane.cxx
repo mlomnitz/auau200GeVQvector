@@ -25,42 +25,42 @@ ClassImp(StEventPlane)
 //-----------------------------------------------------------------------------
 StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMultCorr* grefmultCorrUtil)
    : StMaker(name), mPicoDstMaker(picoMaker), mPicoDst(NULL),  mPicoEvent(NULL), mgrefmultCorrUtil(grefmultCorrUtil),
-     mAcceptEvent(false), mAcceptQvectorFile(false), mAcceptQvectorFiletmp(true), mCent(-1), mRunNumber(0), mBField(-999.),mVertexPos(-999,-999,-999),
-  mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), mResolutionRandom(0), mResolutionEta(0),
-     mQ(-999,-999), mQ1(-999,-999), mQ2(-999,-999), mQEtaPlus(-999,-999), mQEtaMinus(-999,-999),
+     mAcceptEvent(false), mAcceptQvectorFile(false), mAcceptQvectorFiletmp(true), mCent(-1), mRunNumber(0), mBField(-999.), mVertexPos(-999, -999, -999),
+     mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), mResolutionRandom(0), mResolutionEta(0),
+     mQ(-999, -999), mQ1(-999, -999), mQ2(-999, -999), mQEtaPlus(-999, -999), mQEtaMinus(-999, -999),
      prfQxCentEtaPlus(NULL), prfQyCentEtaPlus(NULL), prfQxCentEtaMinus(NULL), prfQyCentEtaMinus(NULL)
 {
 }
 //-----------------------------------------------------------------------------
 Int_t StEventPlane::Init()
 {
-  if(mFileOut)
-    {
+   if (mFileOut)
+   {
       mFileOut->cd();
-      // track level QA 
+      // track level QA
       hNHitsFit = new TH1I("hNHitsFit", "hNHitsFit", 50, 0, 50);
       hDca = new TH1F("hDca", "hDca", 20000, -10, 10);
       hEta = new TH1F("hEta", "hEta", 30, -1.5, 1.5);
       hPt = new TH1F("hPt", "hPt", 200, 0, 10);
 
-      // event plane and Q vector 
+      // event plane and Q vector
       float PI = TMath::Pi();
 
-      hPhiCentEtaPlusZPlus = new TH2F("hPhiCentEtaPlusZPlus","hPhiCentEtaPlusZPlus",9,0,9,120,-PI,PI);
-      hPhiCentEtaPlusZMinus = new TH2F("hPhiCentEtaPlusZMinus","hPhiCentEtaPlusZMinus",9,0,9,120,-PI,PI);
-      hPhiCentEtaMinusZPlus = new TH2F("hPhiCentEtaMinusZPlus","hPhiCentEtaMinusZPlus",9,0,9,120,-PI,PI);
-      hPhiCentEtaMinusZMinus = new TH2F("hPhiCentEtaMinusZMinus","hPhiCentEtaMinusZMinus",9,0,9,120,-PI,PI);
+      hPhiCentEtaPlusZPlus = new TH2F("hPhiCentEtaPlusZPlus", "hPhiCentEtaPlusZPlus", 9, 0, 9, 120, -PI, PI);
+      hPhiCentEtaPlusZMinus = new TH2F("hPhiCentEtaPlusZMinus", "hPhiCentEtaPlusZMinus", 9, 0, 9, 120, -PI, PI);
+      hPhiCentEtaMinusZPlus = new TH2F("hPhiCentEtaMinusZPlus", "hPhiCentEtaMinusZPlus", 9, 0, 9, 120, -PI, PI);
+      hPhiCentEtaMinusZMinus = new TH2F("hPhiCentEtaMinusZMinus", "hPhiCentEtaMinusZMinus", 9, 0, 9, 120, -PI, PI);
 
-      hEventPlaneCent = new TH2F("hEventPlaneCent","hEventPlaneCent",9,0,9,60,0,PI);
-      hEventPlane1Cent = new TH2F("hEventPlane1Cent","hEventPlane1Cent",9,0,9,60,0,PI);
-      hEventPlane2Cent = new TH2F("hEventPlane2Cent","hEventPlane2Cent",9,0,9,60,0,PI);
-      hEventPlaneEtaPlusCent = new TH2F("hEventPlaneEtaPlusCent","hEventPlaneEtaPlusCent",9,0,9,60,0,PI);
-      hEventPlaneEtaMinusCent = new TH2F("hEventPlaneEtaMinusCent","hEventPlaneEtaMinusCent",9,0,9,60,0,PI);
-      hQyQxCent = new TH3F("hQyQxCent", "hQyQxCent", 9,0,9,1000,-50,50,1000,-50,50);
-      hQyQx1Cent = new TH3F("hQyQx1Cent", "hQyQx1Cent", 9,0,9,1000,-50,50,1000,-50,50);
-      hQyQx2Cent = new TH3F("hQyQx2Cent", "hQyQx2Cent", 9,0,9,1000,-50,50,1000,-50,50);
-      hQyQxEtaPlusCent = new TH3F("hQyQxEtaPlusCent", "hQyQxEtaPlusCent", 9,0,9,1000,-50,50,1000,-50,50);
-      hQyQxEtaMinusCent = new TH3F("hQyQxEtaMinusCent", "hQyQxEtaMinusCent", 9,0,9,1000,-50,50,1000,-50,50);
+      hEventPlaneCent = new TH2F("hEventPlaneCent", "hEventPlaneCent", 9, 0, 9, 60, 0, PI);
+      hEventPlane1Cent = new TH2F("hEventPlane1Cent", "hEventPlane1Cent", 9, 0, 9, 60, 0, PI);
+      hEventPlane2Cent = new TH2F("hEventPlane2Cent", "hEventPlane2Cent", 9, 0, 9, 60, 0, PI);
+      hEventPlaneEtaPlusCent = new TH2F("hEventPlaneEtaPlusCent", "hEventPlaneEtaPlusCent", 9, 0, 9, 60, 0, PI);
+      hEventPlaneEtaMinusCent = new TH2F("hEventPlaneEtaMinusCent", "hEventPlaneEtaMinusCent", 9, 0, 9, 60, 0, PI);
+      hQyQxCent = new TH3F("hQyQxCent", "hQyQxCent", 9, 0, 9, 1000, -50, 50, 1000, -50, 50);
+      hQyQx1Cent = new TH3F("hQyQx1Cent", "hQyQx1Cent", 9, 0, 9, 1000, -50, 50, 1000, -50, 50);
+      hQyQx2Cent = new TH3F("hQyQx2Cent", "hQyQx2Cent", 9, 0, 9, 1000, -50, 50, 1000, -50, 50);
+      hQyQxEtaPlusCent = new TH3F("hQyQxEtaPlusCent", "hQyQxEtaPlusCent", 9, 0, 9, 1000, -50, 50, 1000, -50, 50);
+      hQyQxEtaMinusCent = new TH3F("hQyQxEtaMinusCent", "hQyQxEtaMinusCent", 9, 0, 9, 1000, -50, 50, 1000, -50, 50);
       prfCosResolutionRandomCent = new TProfile("prfCosResolutionRandomCent", "prfCosResolutionRandomCent", 9, 0, 9);
       prfCosResolutionEtaCent = new TProfile("prfCosResolutionEtaCent", "prfCosResolutionEtaCent", 9, 0, 9);
 
@@ -68,14 +68,14 @@ Int_t StEventPlane::Init()
       hHadronHftV2PtCent = new TH3F("hHadronHftV2PtCent", "hHadronHftV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
       hHadronPrimaryV2PtCent = new TH3F("hHadronPrimaryV2PtCent", "hHadronPrimaryV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
       hHadronHftPrimaryV2PtCent = new TH3F("hHadronHftPrimaryV2PtCent", "hHadronHftPrimaryV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
-     
-    }
-  return kStOk;
+
+   }
+   return kStOk;
 }
 //-----------------------------------------------------------------------------
 void StEventPlane::setFileOut(TFile* fileOut)
 {
-  mFileOut = fileOut;
+   mFileOut = fileOut;
 }
 //-----------------------------------------------------------------------------
 Int_t StEventPlane::Make()
@@ -104,16 +104,16 @@ Int_t StEventPlane::Make()
 
    getEventInfo();//get event info
 
- //  if (mAcceptEvent)
+//  if (mAcceptEvent)
    if (mAcceptQvectorFile && mAcceptQvectorFiletmp)
-     {
-       mEventPlaneStatus = calculateEventPlane();
-       if (!mEventPlaneStatus && mAcceptEvent)
-	 {
-	   calculateHadronV2();
-	 }
-     }
-   
+   {
+      mEventPlaneStatus = calculateEventPlane();
+      if (!mEventPlaneStatus && mAcceptEvent)
+      {
+         calculateHadronV2();
+      }
+   }
+
    return kStOK;
 }
 
@@ -133,16 +133,20 @@ void StEventPlane::getEventInfo()
 
    mBField = mPicoEvent->bField();
 
-   bool isVPDMB5=kFALSE;
-   for(int i=0;i<9;i++) { if(mPicoEvent->triggerWord() & (1<<i)) isVPDMB5=kTRUE ;}//Select MB trigger
-   if (!(isVPDMB5)) {
-     return;
+   bool isVPDMB5 = kFALSE;
+   for (int i = 0; i < 9; i++)
+   {
+      if (mPicoEvent->triggerWord() & (1 << i)) isVPDMB5 = kTRUE ;  //Select MB trigger
+   }
+   if (!(isVPDMB5))
+   {
+      return;
    }
 
-   if(TMath::Abs(mVertexPos.z()) > EventPlaneConstants::vzMax) return;
-   if(TMath::Abs(mVertexPos.z() - mPicoEvent->vzVpd()) > EventPlaneConstants::deltaVzMax) return;
-   if(mCent<0 || mCent>9) return;
-   
+   if (TMath::Abs(mVertexPos.z()) > EventPlaneConstants::vzMax) return;
+   if (TMath::Abs(mVertexPos.z() - mPicoEvent->vzVpd()) > EventPlaneConstants::deltaVzMax) return;
+   if (mCent < 0 || mCent > 9) return;
+
    mAcceptEvent = true;
 }
 
@@ -157,19 +161,19 @@ void StEventPlane::getRunInfo(int const runNumber)
    fQVector.GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
    if (!prfQxCentEtaPlus)
    {
-     LOG_INFO << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endm;
-     mAcceptQvectorFile = false;
-     mAcceptQvectorFiletmp = false;
-     return;
+      LOG_INFO << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endm;
+      mAcceptQvectorFile = false;
+      mAcceptQvectorFiletmp = false;
+      return;
    }
    else
    {
-     mAcceptQvectorFile = true;
-     mAcceptQvectorFiletmp = true;
+      mAcceptQvectorFile = true;
+      mAcceptQvectorFiletmp = true;
    }
 
-   prfQxCentEtaPlus =  (TProfile*)fQVector.Get("prfQxCentEtaPlus")->Clone("prfQxCentEtaPlus");
-   prfQyCentEtaPlus =  (TProfile*)fQVector.Get("prfQyCentEtaPlus")->Clone("prfQyCentEtaPlus");
+   prfQxCentEtaPlus = (TProfile*)fQVector.Get("prfQxCentEtaPlus")->Clone("prfQxCentEtaPlus");
+   prfQyCentEtaPlus = (TProfile*)fQVector.Get("prfQyCentEtaPlus")->Clone("prfQyCentEtaPlus");
    prfQxCentEtaMinus = (TProfile*)fQVector.Get("prfQxCentEtaMinus")->Clone("prfQxCentEtaMinus");
    prfQyCentEtaMinus = (TProfile*)fQVector.Get("prfQyCentEtaMinus")->Clone("prfQyCentEtaMinus");
 
@@ -316,57 +320,58 @@ int StEventPlane::calculateEventPlane()
 
    return 0;
 }
-float StEventPlane::getEventPlane(int nTracksToExclude, int* indexTracksToExclude) const 
+float StEventPlane::getEventPlane(int nTracksToExclude, int* indexTracksToExclude) const
 {
-  TVector2 Qsub = mQ;
-  for(int i=0; i<nTracksToExclude; i++)
-    {
+   TVector2 Qsub = mQ;
+   for (int i = 0; i < nTracksToExclude; i++)
+   {
       TVector2 qTrack(qxTracks[indexTracksToExclude[i]], qyTracks[indexTracksToExclude[i]]);
       Qsub -= qTrack;
-    }
-  return Qsub.Phi() * 0.5;
+   }
+   return Qsub.Phi() * 0.5;
 }
 void StEventPlane::calculateHadronV2() const
 {
-  for(int iTrack=0; iTrack<mPicoDst->numberOfTracks(); iTrack++)
-    {
-      StPicoTrack* picoTrack =(StPicoTrack*) mPicoDst->track(iTrack);
-      if(!picoTrack){
-        break;
+   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
+   {
+      StPicoTrack* picoTrack = (StPicoTrack*) mPicoDst->track(iTrack);
+      if (!picoTrack)
+      {
+         break;
       }
 
-      if(picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
+      if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
 
       StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
       float dca = helix->geometricSignedDistance(mVertexPos);
-      if(TMath::Abs(dca) > EventPlaneConstants::dcaMaxEventPlane) continue;
+      if (TMath::Abs(dca) > EventPlaneConstants::dcaMaxEventPlane) continue;
 
-      float pathLengthToPrimaryVertex =helix->pathLength(mVertexPos.x(), mVertexPos.y());
-      StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField*kilogauss);
+      float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
+      StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
       float phi = momentum.phi();
-      if(fabs(eta) > EventPlaneConstants::etaMaxEventPlane) continue;
+      if (fabs(eta) > EventPlaneConstants::etaMaxEventPlane) continue;
 
       float qx = qxTracks[iTrack];
       float qy = qyTracks[iTrack];
       TVector2 qTrack(qx, qy);
       TVector2 QSub = mQ - qTrack;
-      float psi = QSub.Phi()/2;
+      float psi = QSub.Phi() / 2;
 
       float weight = mgrefmultCorrUtil->getWeight();
 
-      hHadronV2PtCent->Fill(pt, mCent, cos(2.*(phi-psi)), weight);
-      
-      if(picoTrack->isHFTTrack())
-	hHadronHftV2PtCent->Fill(pt, mCent, cos(2.*(phi-psi)), weight);
-      
-      if(picoTrack->pMom().mag()>0)
-	hHadronPrimaryV2PtCent->Fill(pt, mCent, cos(2.*(phi-psi)), weight);
-      
-      if(picoTrack->isHFTTrack() && picoTrack->pMom().mag()>0)
-	hHadronHftPrimaryV2PtCent->Fill(pt, mCent, cos(2.*(phi-psi)), weight);
+      hHadronV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
 
-    }
+      if (picoTrack->isHFTTrack())
+         hHadronHftV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
+
+      if (picoTrack->pMom().mag() > 0)
+         hHadronPrimaryV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
+
+      if (picoTrack->isHFTTrack() && picoTrack->pMom().mag() > 0)
+         hHadronHftPrimaryV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
+
+   }
 }
 
