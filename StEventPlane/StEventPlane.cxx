@@ -6,6 +6,7 @@
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TH3F.h"
+#include "THn.h"
 #include "TProfile.h"
 
 #include "StPicoDstMaker/StPicoDst.h"
@@ -69,8 +70,25 @@ Int_t StEventPlane::Init()
       hHadronPrimaryV2PtCent = new TH3F("hHadronPrimaryV2PtCent", "hHadronPrimaryV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
       hHadronHftPrimaryV2PtCent = new TH3F("hHadronHftPrimaryV2PtCent", "hHadronHftPrimaryV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
 
+      const int nDim = 4;
+      int nBins[nDim] = {100, 9, 200, 8};//pt, cent, v2, etaGap 
+      double xMin[nDim] = {0, 0, -1, 0};
+      double xMax[nDim] = {5, 9, 1, 0.8};
+      hHadronV2PtCentEtaGap = new THnF("hHadronV2PtCentEtaGap", "hHadronV2PtCentEtaGap", nDim, nBins, xMin, xMax);
    }
    return kStOk;
+}
+//----------------------------------------------------------------------------- 
+Int_t StEventPlane::Finish()
+{
+  cout<<"StEventPlane::Finish()"<<endl;
+  mFileOut->cd();
+  hHadronV2PtCentEtaGap->Write();
+
+  //  mFileOut->Write();
+  //  mFileOut->Close();
+
+  return kStOK;
 }
 //-----------------------------------------------------------------------------
 void StEventPlane::setFileOut(TFile* fileOut)
@@ -225,6 +243,10 @@ int StEventPlane::calculateEventPlane()
    float Qx = 0., Qy = 0.;
    float Qx1 = 0., Qy1 = 0., Qx2 = 0., Qy2 = 0.;
    float QxEtaPlus = 0., QyEtaPlus = 0., QxEtaMinus = 0., QyEtaMinus = 0.;
+   float QxEtaPlusGap005 = 0., QyEtaPlusGap005 = 0., QxEtaMinusGap005 = 0., QyEtaMinusGap005 = 0.;
+   float QxEta[20], QyEta[20];
+   memset(QxEta, 0, 20*sizeof(float));
+   memset(QyEta, 0, 20*sizeof(float));
    float vertexZ = mVertexPos.z();
    for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
    {
@@ -261,40 +283,54 @@ int StEventPlane::calculateEventPlane()
       float qy = sin(2 * phi) * pt;
 
       if (eta > 0)
-      {
-         qx -= prfQxCentEtaPlus->GetBinContent(mCent + 1);
-         qy -= prfQyCentEtaPlus->GetBinContent(mCent + 1);
-      }
+	{
+	  qx -= prfQxCentEtaPlus->GetBinContent(mCent + 1);
+	  qy -= prfQyCentEtaPlus->GetBinContent(mCent + 1);
+	}
       else
-      {
-         qx -= prfQxCentEtaMinus->GetBinContent(mCent + 1);
-         qy -= prfQyCentEtaMinus->GetBinContent(mCent + 1);
-      }
-
+	{
+	  qx -= prfQxCentEtaMinus->GetBinContent(mCent + 1);
+	  qy -= prfQyCentEtaMinus->GetBinContent(mCent + 1);
+	}
+      
       Qx += qx;
       Qy += qy;
 
       if (indexTrack[iTrackForEventPlane] >= Scount)
-      {
-         Qx1 += qx;
-         Qy1 += qy;
-      }
+	{
+	  Qx1 += qx;
+	  Qy1 += qy;
+	}
       else
-      {
-         Qx2 += qx;
-         Qy2 += qy;
-      }
-
+	{
+	  Qx2 += qx;
+	  Qy2 += qy;
+	}
+      
       if (eta > 0)
-      {
-         QxEtaPlus += qx;
-         QyEtaPlus += qy;
-      }
+	{
+	  QxEtaPlus += qx;
+	  QyEtaPlus += qy;
+	  if(eta > 0.05)
+	    {
+	      QxEtaPlusGap005 += qx;
+	      QyEtaPlusGap005 += qy;
+	    }
+	}
       else
-      {
-         QxEtaMinus += qx;
-         QyEtaMinus += qy;
-      }
+	{
+	  QxEtaMinus += qx;
+	  QyEtaMinus += qy;
+	  if(eta < -0.05)
+	    {
+	      QxEtaMinusGap005 += qx;
+	      QyEtaMinusGap005 += qy;
+	    }
+	}
+
+      int iEta = int(eta*10+10);
+      QxEta[iEta] += qx;
+      QyEta[iEta] += qy;
 
       qxTracks[iTrack] = qx;
       qyTracks[iTrack] = qy;
@@ -309,6 +345,10 @@ int StEventPlane::calculateEventPlane()
    mQ2.Set(Qx2, Qy2);
    mQEtaPlus.Set(QxEtaPlus, QyEtaPlus);
    mQEtaMinus.Set(QxEtaMinus, QyEtaMinus);
+   mQEtaPlusGap005.Set(QxEtaPlusGap005, QyEtaPlusGap005);
+   mQEtaMinusGap005.Set(QxEtaMinusGap005,QyEtaMinusGap005);
+   for(int i=0; i<20; i++)
+     mQEta[i].Set(QxEta[i], QyEta[i]);
 
    if (mQ.Mod2() == 0 || mQ1.Mod2() == 0 || mQ2.Mod2() == 0 || mQEtaPlus.Mod2() == 0 || mQEtaMinus.Mod2() == 0)
    {
@@ -358,6 +398,19 @@ float StEventPlane::getEventPlane(int nTracksToExclude, int* indexTracksToExclud
    return Qsub.Phi() * 0.5;
 }
 
+TVector2 StEventPlane::QEtaGap(int iEta, int nEtaGaps) const
+{
+  TVector2 QEtaGap_(0, 0);
+  int iEta_ = iEta;
+  if(iEta_ < nEtaGaps-1) iEta_ = nEtaGaps-1;
+  if(iEta_ > 20-nEtaGaps) iEta_= 20-nEtaGaps;
+  for(int i=0; i<20; i++)
+    {
+      if(fabs(i-iEta_) >= nEtaGaps) QEtaGap_ += mQEta[i];
+    }
+  return QEtaGap_;
+}
+
 void StEventPlane::calculateHadronV2() const
 {
    for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
@@ -400,6 +453,21 @@ void StEventPlane::calculateHadronV2() const
       if (picoTrack->isHFTTrack() && picoTrack->pMom().mag() > 0)
          hHadronHftPrimaryV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
 
+      int iEta = (int)(eta*10+10);
+      for(int nEtaGaps=0; nEtaGaps<8; nEtaGaps++)
+	{
+	  TVector2 QSubEtaGap = QEtaGap(iEta, nEtaGaps);
+	  int iEta_ = iEta;
+	  if(iEta_ < nEtaGaps) iEta_ = nEtaGaps-1;
+	  if(iEta_ > 20-nEtaGaps) iEta_= 20-nEtaGaps;
+	  if(fabs(iEta-iEta_) >= nEtaGaps)
+	    QSubEtaGap -= qTrack;
+	  if(QSubEtaGap.Mod()==0) {cout<<"QSubEtaGap.Mod()==0  nEtaGaps: "<<nEtaGaps<<"  cent: "<<mCent<<endl; continue;}
+	  float dPhiEtaGap = phi-QSubEtaGap.Phi()/2;
+	  double toFill[4] = {pt, mCent+0.5, cos(2.*dPhiEtaGap), 0.1*nEtaGaps+0.05};
+	  hHadronV2PtCentEtaGap->Fill(toFill, weight);
+
+	}
    }
 }
 

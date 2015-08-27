@@ -24,6 +24,7 @@ class TH1I;
 class TH1F;
 class TH2F;
 class TH3F;
+class THn;
 class TProfile;
 
 const int maxNTracks = 20000;
@@ -35,6 +36,7 @@ public:
 
    Int_t Init();
    virtual Int_t Make();
+   Int_t Finish();
    void setFileOut(TFile* fileOut);
 
    int   getCentrality() const;
@@ -48,6 +50,10 @@ public:
    void calculateHadronV2() const;
    int eventPlaneStatus() const;
    TVector2 Q() const;
+   TVector2 QEtaPlusGap005() const;
+   TVector2 QEtaMinusGap005() const;
+   TVector2 QEtaGap(int iEta, int nEtaGaps) const;
+   TVector2 QEta(int iEta) const;
    TVector2 q(int iTrack) const;
 
    int   getRunId() const;
@@ -97,6 +103,7 @@ private:
    TH3F*      hHadronHftV2PtCent;
    TH3F*      hHadronPrimaryV2PtCent;
    TH3F*      hHadronHftPrimaryV2PtCent;
+   THn*       hHadronV2PtCentEtaGap;
 
    bool   mAcceptEvent;
    bool   mAcceptQvectorFile;
@@ -109,7 +116,8 @@ private:
    int mEventPlaneStatus;
    float       mEventPlane, mEventPlane1, mEventPlane2, mEventPlaneEtaPlus, mEventPlaneEtaMinus;
    float       mResolutionRandom, mResolutionEta;
-   TVector2    mQ, mQ1, mQ2, mQEtaPlus, mQEtaMinus;
+   TVector2    mQ, mQ1, mQ2, mQEtaPlus, mQEtaMinus, mQEtaPlusGap005, mQEtaMinusGap005;
+   TVector2 mQEta[20];
    TProfile*  prfQxCentEtaPlus;
    TProfile*  prfQyCentEtaPlus;
    TProfile*  prfQxCentEtaMinus;
@@ -163,6 +171,18 @@ inline int StEventPlane::eventPlaneStatus() const
 inline TVector2 StEventPlane::Q() const
 {
    return mQ;
+}
+inline TVector2 StEventPlane::QEtaPlusGap005() const
+{
+  return mQEtaPlusGap005;
+}
+inline TVector2 StEventPlane::QEtaMinusGap005() const
+{
+  return mQEtaMinusGap005;
+}
+inline TVector2 StEventPlane::QEta(int iEta) const
+{
+  return mQEta[iEta];
 }
 inline TVector2 StEventPlane::q(int iTrack) const
 {
