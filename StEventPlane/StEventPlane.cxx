@@ -172,12 +172,14 @@ void StEventPlane::getRunInfo(int const runNumber)
 
    char fileName[256];
    sprintf(fileName, "%s/%i.qVector.root", EventPlaneConstants::qVectorRunDir.Data(), mRunNumber);
-   TFile fQVector(fileName);
-   if(fQVector.IsZombie())
+   TFile* fQVector = new TFile(fileName);
+   if(fQVector->IsZombie())
      {
        int dayNumber = mRunNumber%1000000/1000;
        sprintf(fileName, "%s/%03d.qVector.root", EventPlaneConstants::qVectorDayDir.Data(), dayNumber);
-       if(!fQVector.Open(fileName))
+       delete fQVector;
+       fQVector = new TFile(fileName);
+       if(fQVector->IsZombie())
 	 {
 	   cout<<"can not load run or day qVector file: "<<mRunNumber<<endl;
 	   return;
@@ -185,7 +187,7 @@ void StEventPlane::getRunInfo(int const runNumber)
      }
    cout << "load qVector file: " << fileName << endl;
 
-   fQVector.GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
+   fQVector->GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
    if (!prfQxCentEtaPlus)
    {
       LOG_INFO << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endm;
@@ -199,17 +201,18 @@ void StEventPlane::getRunInfo(int const runNumber)
       mAcceptQvectorFiletmp = true;
    }
 
-   prfQxCentEtaPlus = (TProfile*)fQVector.Get("prfQxCentEtaPlus")->Clone("prfQxCentEtaPlus");
-   prfQyCentEtaPlus = (TProfile*)fQVector.Get("prfQyCentEtaPlus")->Clone("prfQyCentEtaPlus");
-   prfQxCentEtaMinus = (TProfile*)fQVector.Get("prfQxCentEtaMinus")->Clone("prfQxCentEtaMinus");
-   prfQyCentEtaMinus = (TProfile*)fQVector.Get("prfQyCentEtaMinus")->Clone("prfQyCentEtaMinus");
+   prfQxCentEtaPlus = (TProfile*)fQVector->Get("prfQxCentEtaPlus")->Clone("prfQxCentEtaPlus");
+   prfQyCentEtaPlus = (TProfile*)fQVector->Get("prfQyCentEtaPlus")->Clone("prfQyCentEtaPlus");
+   prfQxCentEtaMinus = (TProfile*)fQVector->Get("prfQxCentEtaMinus")->Clone("prfQxCentEtaMinus");
+   prfQyCentEtaMinus = (TProfile*)fQVector->Get("prfQyCentEtaMinus")->Clone("prfQyCentEtaMinus");
 
    prfQxCentEtaPlus->SetDirectory(0);
    prfQyCentEtaPlus->SetDirectory(0);
    prfQxCentEtaMinus->SetDirectory(0);
    prfQyCentEtaMinus->SetDirectory(0);
 
-   fQVector.Close();
+   fQVector->Close();
+   delete fQVector;
 }
 
 /*----------------------------------------------------------------------------------------------------------------------*/
