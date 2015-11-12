@@ -169,10 +169,21 @@ void StEventPlane::getEventInfo()
 void StEventPlane::getRunInfo(int const runNumber)
 {
    mRunNumber = runNumber;
+
    char fileName[256];
-   sprintf(fileName, "%s/%i.qVector.root", EventPlaneConstants::qVectorDir.Data(), mRunNumber);
-   cout << "load qVector file: " << fileName << endl;
+   sprintf(fileName, "%s/%i.qVector.root", EventPlaneConstants::qVectorRunDir.Data(), mRunNumber);
    TFile fQVector(fileName);
+   if(fQVector.IsZombie())
+     {
+       int dayNumber = mRunNumber%1000000/1000;
+       sprintf(fileName, "%s/%03d.qVector.root", EventPlaneConstants::qVectorDayDir.Data(), dayNumber);
+       if(!fQVector.Open(fileName))
+	 {
+	   cout<<"can not load run or day qVector file: "<<mRunNumber<<endl;
+	   return;
+	 }
+     }
+   cout << "load qVector file: " << fileName << endl;
 
    fQVector.GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
    if (!prfQxCentEtaPlus)
