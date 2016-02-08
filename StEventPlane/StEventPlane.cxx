@@ -223,7 +223,7 @@ int StEventPlane::calculateEventPlane()
 
    // pre-loop to count tracks for event plane, prepare for shuffle
    int nTracksForEventPlane = 0;
-   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
+   for (unsigned short iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
    {
       StPicoTrack* picoTrack = (StPicoTrack*) mPicoDst->track(iTrack);
       if (!picoTrack)
@@ -233,12 +233,12 @@ int StEventPlane::calculateEventPlane()
 
       if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
 
-      StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
-      float dca = helix->geometricSignedDistance(mVertexPos);
+      StPhysicalHelix helix = picoTrack->dcaGeometry().helix();
+      float dca = helix.geometricSignedDistance(mVertexPos);
       if (TMath::Abs(dca) > EventPlaneConstants::dcaMaxEventPlane) continue;
 
-      float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
-      StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
+      float pathLengthToPrimaryVertex = helix.pathLength(mVertexPos.x(), mVertexPos.y());
+      StThreeVectorF momentum = helix.momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
       if (fabs(eta) > EventPlaneConstants::etaMaxEventPlane) continue;
@@ -262,7 +262,7 @@ int StEventPlane::calculateEventPlane()
    memset(QxEta, 0, 20*sizeof(float));
    memset(QyEta, 0, 20*sizeof(float));
    float vertexZ = mVertexPos.z();
-   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
+   for (unsigned short iTrack = 0; iTrack < mPicoDst->numberOfTracks(); ++iTrack)
    {
       StPicoTrack* picoTrack = (StPicoTrack*) mPicoDst->track(iTrack);
       if (!picoTrack)
@@ -273,13 +273,13 @@ int StEventPlane::calculateEventPlane()
       if (mAcceptEvent) hNHitsFit->Fill(picoTrack->nHitsFit());
       if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
 
-      StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
-      float dca = helix->geometricSignedDistance(mVertexPos);
+      StPhysicalHelix helix = picoTrack->dcaGeometry().helix();
+      float dca = helix.geometricSignedDistance(mVertexPos);
       if (mAcceptEvent) hDca->Fill(dca);
       if (TMath::Abs(dca) > EventPlaneConstants::dcaMaxEventPlane) continue;
 
-      float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
-      StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
+      float pathLengthToPrimaryVertex = helix.pathLength(mVertexPos.x(), mVertexPos.y());
+      StThreeVectorF momentum = helix.momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
       float phi = momentum.phi();
@@ -427,7 +427,7 @@ TVector2 StEventPlane::QEtaGap(int iEta, int nEtaGaps) const
 
 void StEventPlane::calculateHadronV2() const
 {
-   for (int iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
+   for (unsigned short iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
    {
       StPicoTrack* picoTrack = (StPicoTrack*) mPicoDst->track(iTrack);
       if (!picoTrack)
@@ -437,12 +437,12 @@ void StEventPlane::calculateHadronV2() const
 
       if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
 
-      StPhysicalHelix* helix = &picoTrack->dcaGeometry().helix();
-      float dca = helix->geometricSignedDistance(mVertexPos);
+      StPhysicalHelix helix = picoTrack->dcaGeometry().helix();
+      float dca = helix.geometricSignedDistance(mVertexPos);
       if (TMath::Abs(dca) > EventPlaneConstants::dcaMaxEventPlane) continue;
 
-      float pathLengthToPrimaryVertex = helix->pathLength(mVertexPos.x(), mVertexPos.y());
-      StThreeVectorF momentum = helix->momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
+      float pathLengthToPrimaryVertex = helix.pathLength(mVertexPos.x(), mVertexPos.y());
+      StThreeVectorF momentum = helix.momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
       float pt = momentum.perp();
       float eta = momentum.pseudoRapidity();
       float phi = momentum.phi();
