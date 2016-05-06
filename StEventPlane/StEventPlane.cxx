@@ -150,9 +150,9 @@ void StEventPlane::getEventInfo()
    mBField = mPicoEvent->bField();
 
    bool isVPDMB5 = kFALSE;
-   for (int i = 0; i < 9; i++)
+   for (int i = 0; i < EventPlaneConstants::nTrig; i++)
    {
-      if (mPicoEvent->triggerWord() & (1 << i)) isVPDMB5 = kTRUE ;  //Select MB trigger
+     if ( mPicoEvent->isTrigger(EventPlaneConstants::mTriggerId[i]) ) isVPDMB5 = kTRUE ;  //Select MB trigger
    }
    if (!(isVPDMB5))
    {

@@ -16,7 +16,10 @@
 
 namespace EventPlaneConstants
 {
-
+  int const nTrig = 5;
+  int const mTriggerId[nTrig] = {450050, 450060,
+				 450005, 450015,
+				 450025 };
    TString qVectorRunDir = "/global/homes/q/qiuh/myProject/D0v2/recenter3/qVectorRun";
    TString qVectorDayDir = "/global/homes/q/qiuh/myProject/D0v2/recenter3/qVectorDay";
    //Event Cuts
