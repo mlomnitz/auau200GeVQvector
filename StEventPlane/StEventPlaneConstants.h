@@ -20,8 +20,8 @@ namespace EventPlaneConstants
   int const mTriggerId[nTrig] = {450050, 450060,
 				 450005, 450015,
 				 450025 };
-   TString qVectorRunDir = "/global/homes/q/qiuh/myProject/D0v2/recenter3/qVectorRun";
-   TString qVectorDayDir = "/global/homes/q/qiuh/myProject/D0v2/recenter3/qVectorDay";
+   TString qVectorRunDir = " /global/homes/m/mlomnitz/mlomnitz_projectdir/Run14_Reprod/recenter_v2/qVectorRun";
+   TString qVectorDayDir = " /global/homes/m/mlomnitz/mlomnitz_projectdir/Run14_Reprod/recenter_v2/qVectorDay";
    //Event Cuts
    float const vzMax = 6.0;
    float const deltaVzMax = 3.0;
