@@ -24,11 +24,11 @@
 ClassImp(StEventPlane)
 
 //-----------------------------------------------------------------------------
-StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMultCorr* grefmultCorrUtil)
+StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMultCorr* grefmultCorrUtil, int harmonic)
    : StMaker(name), mPicoDstMaker(picoMaker), mPicoDst(NULL),  mPicoEvent(NULL), mgrefmultCorrUtil(grefmultCorrUtil),
-     mAcceptEvent(false), mAcceptQvectorFile(false), mAcceptQvectorFiletmp(true), mCent(-1), mRunNumber(0), mBField(-999.), mVertexPos(-999, -999, -999),
-     mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), mResolutionRandom(0), mResolutionEta(0),
-     mQ(-999, -999), mQ1(-999, -999), mQ2(-999, -999), mQEtaPlus(-999, -999), mQEtaMinus(-999, -999),
+  mAcceptEvent(false), mAcceptQvectorFile(false), mAcceptQvectorFiletmp(true), mHarmonic(harmonic), mCent(-1), mRunNumber(0), mBField(-999.), 
+     mVertexPos(-999, -999, -999), mEventPlane(0), mEventPlane1(0), mEventPlane2(0), mEventPlaneEtaPlus(0), mEventPlaneEtaMinus(0), 
+     mResolutionRandom(0), mResolutionEta(0), mQ(-999, -999), mQ1(-999, -999), mQ2(-999, -999), mQEtaPlus(-999, -999), mQEtaMinus(-999, -999),
      prfQxCentEtaPlus(NULL), prfQyCentEtaPlus(NULL), prfQxCentEtaMinus(NULL), prfQyCentEtaMinus(NULL)
 {
 }
@@ -52,11 +52,11 @@ Int_t StEventPlane::Init()
       hPhiCentEtaMinusZPlus = new TH2F("hPhiCentEtaMinusZPlus", "hPhiCentEtaMinusZPlus", 9, 0, 9, 120, -PI, PI);
       hPhiCentEtaMinusZMinus = new TH2F("hPhiCentEtaMinusZMinus", "hPhiCentEtaMinusZMinus", 9, 0, 9, 120, -PI, PI);
 
-      hEventPlaneCent = new TH2F("hEventPlaneCent", "hEventPlaneCent", 9, 0, 9, 60, 0, PI);
-      hEventPlane1Cent = new TH2F("hEventPlane1Cent", "hEventPlane1Cent", 9, 0, 9, 60, 0, PI);
-      hEventPlane2Cent = new TH2F("hEventPlane2Cent", "hEventPlane2Cent", 9, 0, 9, 60, 0, PI);
-      hEventPlaneEtaPlusCent = new TH2F("hEventPlaneEtaPlusCent", "hEventPlaneEtaPlusCent", 9, 0, 9, 60, 0, PI);
-      hEventPlaneEtaMinusCent = new TH2F("hEventPlaneEtaMinusCent", "hEventPlaneEtaMinusCent", 9, 0, 9, 60, 0, PI);
+      hEventPlaneCent = new TH2F("hEventPlaneCent", "hEventPlaneCent", 9, 0, 9, 60, 0, (2.0/mHarmonic)*PI);
+      hEventPlane1Cent = new TH2F("hEventPlane1Cent", "hEventPlane1Cent", 9, 0, 9, 60, 0, (2.0/mHarmonic)*PI);
+      hEventPlane2Cent = new TH2F("hEventPlane2Cent", "hEventPlane2Cent", 9, 0, 9, 60, 0, (2.0/mHarmonic)*PI);
+      hEventPlaneEtaPlusCent = new TH2F("hEventPlaneEtaPlusCent", "hEventPlaneEtaPlusCent", 9, 0, 9, 60, 0, (2.0/mHarmonic)*PI);
+      hEventPlaneEtaMinusCent = new TH2F("hEventPlaneEtaMinusCent", "hEventPlaneEtaMinusCent", 9, 0, 9, 60, 0, (2.0/mHarmonic)*PI);
       hQyQxCent = new TH3F("hQyQxCent", "hQyQxCent", 9, 0, 9, 1000, -50, 50, 1000, -50, 50);
       hQyQx1Cent = new TH3F("hQyQx1Cent", "hQyQx1Cent", 9, 0, 9, 1000, -50, 50, 1000, -50, 50);
       hQyQx2Cent = new TH3F("hQyQx2Cent", "hQyQx2Cent", 9, 0, 9, 1000, -50, 50, 1000, -50, 50);
@@ -65,16 +65,16 @@ Int_t StEventPlane::Init()
       prfCosResolutionRandomCent = new TProfile("prfCosResolutionRandomCent", "prfCosResolutionRandomCent", 9, 0, 9);
       prfCosResolutionEtaCent = new TProfile("prfCosResolutionEtaCent", "prfCosResolutionEtaCent", 9, 0, 9);
 
-      hHadronV2PtCent = new TH3F("hHadronV2PtCent", "hHadronV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
-      hHadronHftV2PtCent = new TH3F("hHadronHftV2PtCent", "hHadronHftV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
-      hHadronPrimaryV2PtCent = new TH3F("hHadronPrimaryV2PtCent", "hHadronPrimaryV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
-      hHadronHftPrimaryV2PtCent = new TH3F("hHadronHftPrimaryV2PtCent", "hHadronHftPrimaryV2PtCent", 100, 0., 5., 9, 0, 9, 200, -1., 1.);
+      hHadronVnPtCent = new TH3F(Form("hHadronV%iPtCent",mHarmonic), Form("hHadronV%iPtCent",mHarmonic), 100, 0., 5., 9, 0, 9, 200, -1., 1.);
+      hHadronHftVnPtCent = new TH3F(Form("hHadronHftV%iPtCent",mHarmonic), Form("hHadronHftV%iPtCent",mHarmonic), 100, 0., 5., 9, 0, 9, 200, -1., 1.);
+      hHadronPrimaryVnPtCent = new TH3F(Form("hHadronPrimaryV%iPtCent",mHarmonic), Form("hHadronPrimaryV%iPtCent",mHarmonic), 100, 0., 5., 9, 0, 9, 200, -1., 1.);
+      hHadronHftPrimaryVnPtCent = new TH3F(Form("hHadronHftPrimaryV%iPtCent",mHarmonic), Form("hHadronHftPrimaryV%iPtCent",mHarmonic), 100, 0., 5., 9, 0, 9, 200, -1., 1.);
 
       const int nDim = 4;
       int nBins[nDim] = {100, 9, 200, 8};//pt, cent, v2, etaGap 
       double xMin[nDim] = {0, 0, -1, 0};
       double xMax[nDim] = {5, 9, 1, 0.8};
-      hHadronV2PtCentEtaGap = new THnF("hHadronV2PtCentEtaGap", "hHadronV2PtCentEtaGap", nDim, nBins, xMin, xMax);
+      hHadronVnPtCentEtaGap = new THnF(Form("hHadronV%iPtCentEtaGap",mHarmonic), Form("hHadronV%iPtCentEtaGap",mHarmonic), nDim, nBins, xMin, xMax);
    }
    return kStOk;
 }
@@ -83,7 +83,7 @@ Int_t StEventPlane::Finish()
 {
   cout<<"StEventPlane::Finish()"<<endl;
   mFileOut->cd();
-  hHadronV2PtCentEtaGap->Write();
+  hHadronVnPtCentEtaGap->Write();
 
   //  mFileOut->Write();
   //  mFileOut->Close();
@@ -127,7 +127,7 @@ Int_t StEventPlane::Make()
       mEventPlaneStatus = calculateEventPlane();
       if (!mEventPlaneStatus && mAcceptEvent)
       {
-         calculateHadronV2();
+         calculateHadronVn();
       }
    }
 
@@ -187,7 +187,7 @@ void StEventPlane::getRunInfo(int const runNumber)
      }
    cout << "load qVector file: " << fileName << endl;
 
-   fQVector->GetObject("prfQxCentEtaPlus", prfQxCentEtaPlus);
+   fQVector->GetObject(Form("prfQxCentEtaPlus_v%i",mHarmonic), prfQxCentEtaPlus);
    if (!prfQxCentEtaPlus)
    {
       LOG_INFO << "StEventPlane::THistograms and TProiles NOT found! shoudl check the files From HaoQiu" << endm;
@@ -201,10 +201,10 @@ void StEventPlane::getRunInfo(int const runNumber)
       mAcceptQvectorFiletmp = true;
    }
 
-   prfQxCentEtaPlus = (TProfile*)fQVector->Get("prfQxCentEtaPlus")->Clone("prfQxCentEtaPlus");
-   prfQyCentEtaPlus = (TProfile*)fQVector->Get("prfQyCentEtaPlus")->Clone("prfQyCentEtaPlus");
-   prfQxCentEtaMinus = (TProfile*)fQVector->Get("prfQxCentEtaMinus")->Clone("prfQxCentEtaMinus");
-   prfQyCentEtaMinus = (TProfile*)fQVector->Get("prfQyCentEtaMinus")->Clone("prfQyCentEtaMinus");
+   prfQxCentEtaPlus = (TProfile*)fQVector->Get(Form("prfQxCentEtaPlus_v%i",mHarmonic))->Clone(Form("prfQxCentEtaPlus_v%i",mHarmonic));
+   prfQyCentEtaPlus = (TProfile*)fQVector->Get(Form("prfQyCentEtaPlus_v%i",mHarmonic))->Clone(Form("prfQyCentEtaPlus_v%i",mHarmonic));
+   prfQxCentEtaMinus = (TProfile*)fQVector->Get(Form("prfQxCentEtaMinus_v%i",mHarmonic))->Clone(Form("prfQxCentEtaMinus_v%i",mHarmonic));
+   prfQyCentEtaMinus = (TProfile*)fQVector->Get(Form("prfQyCentEtaMinus_v%i",mHarmonic))->Clone(Form("prfQyCentEtaMinus_v%i",mHarmonic));
 
    prfQxCentEtaPlus->SetDirectory(0);
    prfQyCentEtaPlus->SetDirectory(0);
@@ -293,8 +293,8 @@ int StEventPlane::calculateEventPlane()
       if (mAcceptEvent && eta < 0 && vertexZ > 0) hPhiCentEtaMinusZPlus->Fill(mCent, phi);
       if (mAcceptEvent && eta < 0 && vertexZ < 0) hPhiCentEtaMinusZMinus->Fill(mCent, phi);
 
-      float qx = cos(2 * phi) * pt;
-      float qy = sin(2 * phi) * pt;
+      float qx = cos(mHarmonic * phi) * pt;
+      float qy = sin(mHarmonic * phi) * pt;
 
       if (eta > 0)
 	{
@@ -370,13 +370,13 @@ int StEventPlane::calculateEventPlane()
       return 1;
    }
 
-   mEventPlane = mQ.Phi() * 0.5;
-   mEventPlane1 = mQ1.Phi() * 0.5;
-   mEventPlane2 = mQ2.Phi() * 0.5;
-   mEventPlaneEtaPlus = mQEtaPlus.Phi() * 0.5;
-   mEventPlaneEtaMinus = mQEtaMinus.Phi() * 0.5;
-   mResolutionRandom = cos(2.*(mEventPlane1 - mEventPlane2));
-   mResolutionEta = cos(2.*(mEventPlaneEtaPlus - mEventPlaneEtaMinus));
+   mEventPlane = mQ.Phi()/mHarmonic;
+   mEventPlane1 = mQ1.Phi()/mHarmonic;
+   mEventPlane2 = mQ2.Phi()/mHarmonic;
+   mEventPlaneEtaPlus = mQEtaPlus.Phi()/mHarmonic;
+   mEventPlaneEtaMinus = mQEtaMinus.Phi()/mHarmonic;
+   mResolutionRandom = cos(mHarmonic*(mEventPlane1 - mEventPlane2));
+   mResolutionEta = cos(mHarmonic*(mEventPlaneEtaPlus - mEventPlaneEtaMinus));
 
    if (mAcceptEvent)
    {
@@ -409,7 +409,7 @@ float StEventPlane::getEventPlane(int nTracksToExclude, int* indexTracksToExclud
       TVector2 qTrack(qxTracks[indexTracksToExclude[i]], qyTracks[indexTracksToExclude[i]]);
       Qsub -= qTrack;
    }
-   return Qsub.Phi() * 0.5;
+   return Qsub.Phi()/mHarmonic;
 }
 
 TVector2 StEventPlane::QEtaGap(int iEta, int nEtaGaps) const
@@ -425,7 +425,7 @@ TVector2 StEventPlane::QEtaGap(int iEta, int nEtaGaps) const
   return QEtaGap_;
 }
 
-void StEventPlane::calculateHadronV2() const
+void StEventPlane::calculateHadronVn() const
 {
    for (unsigned short iTrack = 0; iTrack < mPicoDst->numberOfTracks(); iTrack++)
    {
@@ -452,20 +452,20 @@ void StEventPlane::calculateHadronV2() const
       float qy = qyTracks[iTrack];
       TVector2 qTrack(qx, qy);
       TVector2 QSub = mQ - qTrack;
-      float psi = QSub.Phi() / 2;
+      float psi = QSub.Phi()/mHarmonic;
 
       float weight = mgrefmultCorrUtil->getWeight();
 
-      hHadronV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
+      hHadronVnPtCent->Fill(pt, mCent, cos(mHarmonic*(phi - psi)), weight);
 
       if (picoTrack->isHFTTrack())
-         hHadronHftV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
+	hHadronHftVnPtCent->Fill(pt, mCent, cos(mHarmonic*(phi - psi)), weight);
 
       if (picoTrack->pMom().mag() > 0)
-         hHadronPrimaryV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
+	hHadronPrimaryVnPtCent->Fill(pt, mCent, cos(mHarmonic*(phi - psi)), weight);
 
       if (picoTrack->isHFTTrack() && picoTrack->pMom().mag() > 0)
-         hHadronHftPrimaryV2PtCent->Fill(pt, mCent, cos(2.*(phi - psi)), weight);
+         hHadronHftPrimaryVnPtCent->Fill(pt, mCent, cos(mHarmonic*(phi - psi)), weight);
 
       int iEta = (int)(eta*10+10);
       for(int nEtaGaps=0; nEtaGaps<8; nEtaGaps++)
@@ -477,9 +477,9 @@ void StEventPlane::calculateHadronV2() const
 	  if(fabs(iEta-iEta_) >= nEtaGaps)
 	    QSubEtaGap -= qTrack;
 	  if(QSubEtaGap.Mod()==0) {cout<<"QSubEtaGap.Mod()==0  nEtaGaps: "<<nEtaGaps<<"  cent: "<<mCent<<endl; continue;}
-	  float dPhiEtaGap = phi-QSubEtaGap.Phi()/2;
-	  double toFill[4] = {pt, mCent+0.5, cos(2.*dPhiEtaGap), 0.1*nEtaGaps+0.05};
-	  hHadronV2PtCentEtaGap->Fill(toFill, weight);
+	  float dPhiEtaGap = phi-QSubEtaGap.Phi()/mHarmonic;
+	  double toFill[4] = {pt, mCent+0.5, cos(mHarmonic*dPhiEtaGap), 0.1*nEtaGaps+0.05};
+	  hHadronVnPtCentEtaGap->Fill(toFill, weight);
 
 	}
    }

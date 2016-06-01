@@ -32,7 +32,7 @@ const int maxNTracks = 20000;
 class StEventPlane : public StMaker
 {
 public:
-   StEventPlane(const char* name, StPicoDstMaker* picoMaker, StRefMultCorr* grefmultCorrUtil);
+  StEventPlane(const char* name, StPicoDstMaker* picoMaker, StRefMultCorr* grefmultCorrUtil, int harmonic = 2);
 
    Int_t Init();
    virtual Int_t Make();
@@ -47,7 +47,7 @@ public:
    float getEventPlaneEtaMinus() const;
    float getResolutionRandom() const;
    float getResolutionEta() const;
-   void calculateHadronV2() const;
+   void calculateHadronVn() const;
    int eventPlaneStatus() const;
    TVector2 Q() const;
    TVector2 QEtaPlusGap005() const;
@@ -99,16 +99,17 @@ private:
    TProfile*  prfCosResolutionRandomCent;
    TProfile*  prfCosResolutionEtaCent;
 
-   TH3F*      hHadronV2PtCent;
-   TH3F*      hHadronHftV2PtCent;
-   TH3F*      hHadronPrimaryV2PtCent;
-   TH3F*      hHadronHftPrimaryV2PtCent;
-   THn*       hHadronV2PtCentEtaGap;
+   TH3F*      hHadronVnPtCent;
+   TH3F*      hHadronHftVnPtCent;
+   TH3F*      hHadronPrimaryVnPtCent;
+   TH3F*      hHadronHftPrimaryVnPtCent;
+   THn*       hHadronVnPtCentEtaGap;
 
    bool   mAcceptEvent;
    bool   mAcceptQvectorFile;
    bool   mAcceptQvectorFiletmp;
 
+   int         mHarmonic;
    int         mCent;
    int         mRunNumber;
    float       mBField;
