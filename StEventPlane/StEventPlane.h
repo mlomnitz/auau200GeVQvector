@@ -49,6 +49,7 @@ public:
    float getResolutionEta() const;
    void calculateHadronVn() const;
    int eventPlaneStatus() const;
+   int harmonic() const;
    TVector2 Q() const;
    TVector2 QEtaPlusGap005() const;
    TVector2 QEtaMinusGap005() const;
@@ -168,6 +169,10 @@ inline bool  StEventPlane::getAcceptEvent() const
 inline int StEventPlane::eventPlaneStatus() const
 {
    return mEventPlaneStatus;
+}
+inline int StEventPlane::harmonic() const
+{
+  return mHarmonic;
 }
 inline TVector2 StEventPlane::Q() const
 {
