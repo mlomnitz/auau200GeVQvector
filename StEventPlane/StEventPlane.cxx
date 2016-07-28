@@ -232,6 +232,7 @@ int StEventPlane::calculateEventPlane()
       }
 
       if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
+      if(1.*picoTrack->nHitsFit()/picoTrack->nHitsMax() < EventPlaneConstants::mNHitsFitRatioMin) continue;
 
       StPhysicalHelix helix = picoTrack->dcaGeometry().helix();
       float dca = helix.geometricSignedDistance(mVertexPos);
@@ -239,8 +240,16 @@ int StEventPlane::calculateEventPlane()
 
       float pathLengthToPrimaryVertex = helix.pathLength(mVertexPos.x(), mVertexPos.y());
       StThreeVectorF momentum = helix.momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
-      float pt = momentum.perp();
-      float eta = momentum.pseudoRapidity();
+      //SL16d 
+      double eta, pt;
+      if( picoTrack->pMom().perp() > 0 ){
+	eta =picoTrack->pMom().pseudoRapidity();
+	pt =picoTrack->pMom().perp();
+      }
+      else{
+	pt = momentum.perp();
+	eta = momentum.pseudoRapidity();
+      }
       if (fabs(eta) > EventPlaneConstants::etaMaxEventPlane) continue;
       if (pt < EventPlaneConstants::ptMinEventPlane || pt > EventPlaneConstants::ptMaxEventPlane) continue;
 
@@ -272,6 +281,7 @@ int StEventPlane::calculateEventPlane()
 
       if (mAcceptEvent) hNHitsFit->Fill(picoTrack->nHitsFit());
       if (picoTrack->nHitsFit() < EventPlaneConstants::nHitsFitMin) continue;
+      if(1.*picoTrack->nHitsFit()/picoTrack->nHitsMax() < EventPlaneConstants::mNHitsFitRatioMin) continue;
 
       StPhysicalHelix helix = picoTrack->dcaGeometry().helix();
       float dca = helix.geometricSignedDistance(mVertexPos);
@@ -280,9 +290,19 @@ int StEventPlane::calculateEventPlane()
 
       float pathLengthToPrimaryVertex = helix.pathLength(mVertexPos.x(), mVertexPos.y());
       StThreeVectorF momentum = helix.momentumAt(pathLengthToPrimaryVertex, mBField * kilogauss);
-      float pt = momentum.perp();
-      float eta = momentum.pseudoRapidity();
-      float phi = momentum.phi();
+      //SL16d
+      double eta, pt, phi;
+      if( picoTrack->pMom().perp() > 0 ){
+	eta =picoTrack->pMom().pseudoRapidity();
+	pt =picoTrack->pMom().perp();
+	phi =picoTrack->pMom().phi();
+      }
+      else{
+	pt = momentum.perp();
+	eta = momentum.pseudoRapidity();
+	phi = momentum.phi();
+      }
+
       if (mAcceptEvent) hEta->Fill(eta);
       if (mAcceptEvent) hPt->Fill(pt);
       if (fabs(eta) > EventPlaneConstants::etaMaxEventPlane) continue;
