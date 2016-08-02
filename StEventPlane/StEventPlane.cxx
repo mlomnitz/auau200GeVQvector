@@ -31,13 +31,18 @@ StEventPlane::StEventPlane(const char* name, StPicoDstMaker *picoMaker, StRefMul
      mResolutionRandom(0), mResolutionEta(0), mQ(-999, -999), mQ1(-999, -999), mQ2(-999, -999), mQEtaPlus(-999, -999), mQEtaMinus(-999, -999),
      prfQxCentEtaPlus(NULL), prfQyCentEtaPlus(NULL), prfQxCentEtaMinus(NULL), prfQyCentEtaMinus(NULL)
 {
+  TFile* outFile = new TFile(Form("%s.eventplane.root",name),"RECREATE");
+  setFileOut(outFile);
 }
 //-----------------------------------------------------------------------------
 Int_t StEventPlane::Init()
 {
+  //cout<<"Lomnitz : pre enter"<<endl;
    if (mFileOut)
    {
+     // cout<<"Lomnitz if passed"<<endl;
       mFileOut->cd();
+      // cout<<"Lomnitz all passed"<<endl;
       // track level QA
       hNHitsFit = new TH1I("hNHitsFit", "hNHitsFit", 50, 0, 50);
       hDca = new TH1F("hDca", "hDca", 20000, -10, 10);
@@ -83,6 +88,30 @@ Int_t StEventPlane::Finish()
 {
   cout<<"StEventPlane::Finish()"<<endl;
   mFileOut->cd();
+
+  hPhiCentEtaPlusZPlus->Write();
+  hPhiCentEtaPlusZMinus->Write();
+  hPhiCentEtaMinusZPlus->Write();
+  hPhiCentEtaMinusZMinus->Write();
+
+  hEventPlaneCent->Write();
+  hEventPlane1Cent->Write();
+  hEventPlane2Cent->Write();
+  hEventPlaneEtaPlusCent->Write();
+  hEventPlaneEtaMinusCent->Write();
+  hQyQxCent->Write();
+  hQyQx1Cent->Write();
+  hQyQx2Cent->Write();
+  hQyQxEtaPlusCent->Write();
+  hQyQxEtaMinusCent->Write();
+  prfCosResolutionRandomCent->Write();
+  prfCosResolutionEtaCent->Write();
+  
+  hHadronVnPtCent->Write();
+  hHadronHftVnPtCent->Write();
+  hHadronPrimaryVnPtCent->Write();
+  hHadronHftPrimaryVnPtCent->Write();
+  
   hHadronVnPtCentEtaGap->Write();
 
   //  mFileOut->Write();
