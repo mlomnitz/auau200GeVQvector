@@ -22,8 +22,10 @@ namespace EventPlaneConstants
 				 450025 };
 
   //SL16d prduction
-  TString qVectorRunDir ="/global/homes/m/mlomnitz/mlomnitz_projectdir/Run14_Reprod/recenter_v2_2/qVectorRun_v2_v3_2016-07-28";
-   TString qVectorDayDir = "/global/homes/m/mlomnitz/mlomnitz_projectdir/Run14_Reprod/recenter_v2_2/qVectorDay_v2_v3_2016-07-28";
+  //TString qVectorRunDir ="/global/homes/m/mlomnitz/mlomnitz_projectdir/Run14_Reprod/recenter_v2_2/qVectorRun_v2_v3_2016-07-28";
+  //TString qVectorDayDir = "/global/homes/m/mlomnitz/mlomnitz_projectdir/Run14_Reprod/recenter_v2_2/qVectorDay_v2_v3_2016-07-28";
+  TString qVectorRunDir ="/global/homes/m/mlomnitz/mlomnitz_projectdir/Run14_Reprod/recenter_v2_2/qVectorRun_vn_primary_only";
+  TString qVectorDayDir = "/global/homes/m/mlomnitz/mlomnitz_projectdir/Run14_Reprod/recenter_v2_2/qVectorDay_vn_primary_only";
    //Event Cuts
    float const vzMax = 6.0;
    float const deltaVzMax = 3.0;
