@@ -1,3 +1,4 @@
+#define only__primary
 #include <iostream>
 #include <cmath>
 
@@ -276,6 +277,9 @@ int StEventPlane::calculateEventPlane()
 	pt =picoTrack->pMom().perp();
       }
       else{
+#ifdef only__primary
+	continue;
+#endif
 	pt = momentum.perp();
 	eta = momentum.pseudoRapidity();
       }
@@ -327,6 +331,9 @@ int StEventPlane::calculateEventPlane()
 	phi =picoTrack->pMom().phi();
       }
       else{
+#ifdef only__primary
+	continue;
+#endif
 	pt = momentum.perp();
 	eta = momentum.pseudoRapidity();
 	phi = momentum.phi();
